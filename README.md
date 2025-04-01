@@ -1,6 +1,6 @@
 # 📘 AppReservas - Proyecto Django
 
-Este es un proyecto web desarrollado con Django que permite gestionar reservas (o el propósito que tú definas). Incluye autenticación de usuarios, panel de administración y una estructura base lista para escalar.
+Este es un proyecto web desarrollado con Django que permite gestionar reservas .
 
 ---
 
@@ -18,5 +18,5 @@ Este es un proyecto web desarrollado con Django que permite gestionar reservas (
 1. **Clonar el repositorio**
 
 ```bash
-git clone https://github.com/tu-usuario/AppReservas.git
+git clone https://github.com/JhonIsazaPerez/AppReservas.git
 cd AppReservas
