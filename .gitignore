@@ -1,0 +1,58 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+env/
+venv/
+ENV/
+.venv/
+.env/
+
+# VSCode / PyCharm / IDEs
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Django stuff:
+*.log
+*.pot
+*.pyc
+*.pyo
+*.sqlite3
+db.sqlite3
+
+# Media and static
+/media/
+/staticfiles/
+/static/
+
+# Migrations (opcional: úsalas con cuidado)
+**/migrations/*.pyc
+**/migrations/__pycache__/
+# Puedes ignorar los archivos de migración .py también, si quieres no versionarlos:
+# **/migrations/*.py
+
+# Secrets / configuración local
+*.env
+.env.*
+settings_local.py
+
+# Pytest / coverage
+.coverage
+htmlcov/
+.tox/
+.pytest_cache/
+
+# Node/npm (si usas frontend integrado)
+node_modules/
+package-lock.json
+npm-debug.log
+
+# MacOS
+.DS_Store
+
+# Windows
+Thumbs.db
