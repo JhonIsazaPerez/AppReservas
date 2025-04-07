@@ -16,10 +16,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from Login.views import hola
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', hola), 
     path('login/', include('Login.urls')),
+    path('reservations/', include('reservation.urls')),
 ]
