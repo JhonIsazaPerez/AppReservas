@@ -16,7 +16,6 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from Login.views import hola
 from django.contrib import admin
 from django.urls import path, include
 from reservas.views import reserva
