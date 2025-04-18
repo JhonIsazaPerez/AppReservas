@@ -1,0 +1,62 @@
+{% extends 'reservation/base.html' %}
+
+{% block title %}Paso 1: Número de Personas | Actualizar Reserva{% endblock %}
+{% block header_title %}Actualizar Reserva{% endblock %}
+
+{% block step_indicator %}
+<div class="step-indicator">
+    <div class="step active">
+        <span class="step-number">1</span>
+        <div class="step-title">Personas</div>
+    </div>
+    <div class="step">
+        <span class="step-number">2</span>
+        <div class="step-title">Fecha y Hora</div>
+    </div>
+    <div class="step">
+        <span class="step-number">3</span>
+        <div class="step-title">Contacto</div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+        <h5 class="card-title mb-0">Paso 1: Actualizar número de personas</h5>
+    </div>
+    <div class="card-body">
+        <div class="alert alert-info">
+            <p><strong>Actualizando la reserva para:</strong> {{ object.name }}</p>
+            <p><strong>Estado actual:</strong> {{ object.get_state_display }}</p>
+        </div>
+        
+        <form method="post" class="p-3">
+            {% csrf_token %}
+            
+            <div class="mb-4">
+                <h6>¿Cuántas personas asistirán?</h6>
+                
+                {% if form.number_of_people.errors %}
+                <div class="alert alert-danger">
+                    {{ form.number_of_people.errors }}
+                </div>
+                {% endif %}
+                
+                <div class="form-group mb-3">
+                    <label for="{{ form.number_of_people.id_for_label }}" class="form-label">{{ form.number_of_people.label }}</label>
+                    {{ form.number_of_people }}
+                    {% if form.number_of_people.help_text %}
+                    <div class="form-text text-muted">{{ form.number_of_people.help_text }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="d-flex justify-content-between">
+                <a href="{% url 'reservation_detail' object.id %}" class="btn btn-outline-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-primary">Continuar</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
