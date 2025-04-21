@@ -1,22 +1,37 @@
 document.addEventListener("DOMContentLoaded", function() {
+  const buttoncontainer = document.getElementById("button-container");
   const resultContainer = document.getElementById("selected-value");
+  const numericButtons = document.querySelectorAll(".numero");
   const plusButton = document.getElementById("plus-button");
   const modal = document.getElementById("modal");
   const modalInput = document.getElementById("modal-input");
   const modalConfirm = document.getElementById("modal-confirm");
   const modalClose = document.getElementById("modal-close");
-  document.addEventListener("DOMContentLoaded", function() {
-    const modal = document.getElementById("modal");
-    modal.classList.add("hidden"); // Asegúrate de que el modal esté oculto al cargar
-  });
-  document.addEventListener("DOMContentLoaded", function() {
-    const modal = document.getElementById("modal");
-    
-    console.log("Estado inicial del modal:", modal.classList.contains("hidden")); 
-    // Esto debería imprimir 'true' si el modal está correctamente oculto al inicio.
+
+
+  function mostrarSeleccion(valor) {
+    resultContainer.textContent = "Seleccionaste: " + valor;
+  }
+
   
-    modal.classList.add("hidden"); // Fuerza que el modal esté oculto al cargar.
+  document.addEventListener("DOMContentLoaded", function() {
+    const modal = document.getElementById("modal");
+    console.log("Estado inicial del modal:", modal.classList.contains("hidden")); 
+    modal.classList.add("hidden");
   });
+
+  function mostrarSeleccion(valor) {
+    resultContainer.textContent = "Seleccionaste: " + valor;
+  }
+
+  // Evento para los botones numéricos
+  numericButtons.forEach(function(button) {
+    button.addEventListener("click", function() {
+      const value = button.textContent;
+      mostrarSeleccion(value);
+    });
+  });
+
   
   // Función para mostrar el modal
   function mostrarModal() {
@@ -27,7 +42,7 @@ document.addEventListener("DOMContentLoaded", function() {
   // Función para ocultar el modal
   function ocultarModal() {
     modal.classList.add("hidden");
-    modalInput.value = ""; // Limpia el valor del input al cerrar
+    modalInput.value = ""; 
   }
 
   // Función para manejar la confirmación del número
@@ -40,7 +55,7 @@ document.addEventListener("DOMContentLoaded", function() {
       modalInput.value = ""; // Limpiar el cuadro de texto
     } else {
       resultContainer.textContent = "Seleccionaste: " + value;
-      ocultarModal(); // Cierra el modal después de confirmar
+      ocultarModal(); 
     }
   }
 
@@ -51,8 +66,5 @@ document.addEventListener("DOMContentLoaded", function() {
   modalConfirm.addEventListener("click", confirmarNumero);
 
   // Evento para cerrar el modal
-  modalClose.addEventListener("click", function() {
-    console.log("Botón 'Cerrar' presionado"); // Depuración en consola
-    modal.classList.add("hidden"); // Oculta el modal
-  });
+  modalClose.addEventListener("click", ocultarModal);
 });
