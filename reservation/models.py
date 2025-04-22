@@ -188,8 +188,6 @@ class Reservation(models.Model):
         return self._state_object.can_cancel()
     
 
-
-
     @staticmethod
     def get_unavailable_times(date):
         """Retorna una lista de horas que ya están reservadas para una fecha específica"""
