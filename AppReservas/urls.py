@@ -16,10 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from Login.views import hola
 from django.contrib import admin
 from django.urls import path, include
 from reservas.views import reserva
+from reservas.views import calendario
+from reservas.views import hora
+from reservas.views import guardarDatos
+from reservas.views import infoUser
 
 
 
@@ -27,5 +30,15 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', reserva),
     path('reservas/', include('reservas.urls')),
-]
+    path('calendario/', include('reservas.urls')),
+    path('calendario/', calendario, name='calendario'),
+    path('hora/', include('reservas.urls')),
+    path('hora/', hora, name='hora'),
+    path('guardarDatos/', include('reservas.urls')),
+    path('guardarDatos/', guardarDatos, name='guardar_datos'),
+    path('infoUser/', include('reservas.urls')),
+    path('infoUser/', infoUser, name='infoUser'),
+
+]    
+
 

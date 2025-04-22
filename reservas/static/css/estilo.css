@@ -16,6 +16,7 @@ body {
 
 .container h1 {
   font-size: 2em;
+  color: white
 }
 
 .container p {
@@ -124,8 +125,162 @@ body {
   border: 2px solid #5C2A2A;
   border-radius: 5px;
 }
+/* Estilo para el calendario que aparece después de escoger numero de personas */
+
+.calendar-container {
+  text-align: center;
+  background-color: #FFF;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  width: 300px;
+  display: grid;
+  place-items: center;
+}
+
+.calendar-title {
+  font-size: 1.5em;
+  color: #5C2A2A;
+  margin: 0;
+}
+
+.calendar-subtitle {
+  font-size: 1.2em;
+  color: #5C2A2A;
+  margin: 5px 0 20px;
+}
+
+.calendar-wrapper input[type="date"] {
+  font-size: 1em;
+  padding: 10px;
+  width: 100%;
+  border: 1px solid #DDD;
+  border-radius: 5px;
+  background-color: #F9F9F9;
+  color: #333;
+  text-align: center;
+  display: grid;
+  place-items: center;
+}
 
 
+.search-reserve-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: maroon;
+  color: #FFF;
+  font-size: 1em;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.search-reserve-button:hover {
+  background-color: #752D2D;
+}
+/* Estilo para la selección de hora */
+.time-selection {
+  background-color: #592727;
+  color: white;
+  text-align: center;
+  padding: 20px;
+  border-radius: 10px;
+  font-family: Arial, sans-serif;
+}
+
+.time-slots {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.time-slots button {
+  background-color: white;
+  color: #5C2A2A;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.time-slots button:hover {
+  background-color: #ffcccc;
+}
+
+.search-reserve {
+  background-color: white;
+  color: #5C2A2A;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 5px;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.search-reserve:hover {
+  background-color: #f3e5f5;
+}
+
+/* Contenedor de la informacion del usuario */
+.resumen-container {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  max-width: 400px;
+  width: 100%;
+}
+
+h1 {
+  margin-bottom: 20px;
+  color: #444;
+}
+
+.resumen-detalles {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.resumen-detalles p {
+  margin: 10px 0;
+  font-size: 16px;
+}
+
+strong {
+  font-weight: bold;
+  color: #555;
+}
+
+.resumen-botones {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  background-color: #592727;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #4cae4c;
+}
+
+button:active {
+  background-color: #449d44;
+}
 .hidden {
   display: none; 
 }
