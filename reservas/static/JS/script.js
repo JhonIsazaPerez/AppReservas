@@ -40,8 +40,8 @@ document.addEventListener("DOMContentLoaded", function() {
     const value = parseInt(modalInput.value, 10);
     if (isNaN(value)) {
       alert("Por favor, ingresa un número válido.");
-    } else if (value > 15) {
-      alert("El número no puede ser mayor a 15.");
+    } else if (value > 20) {
+      alert("El número no puede ser mayor a 20.");
       modalInput.value = ""; // Limpiar el cuadro de texto
     } else {
       valor = value; // Guardar el valor seleccionado

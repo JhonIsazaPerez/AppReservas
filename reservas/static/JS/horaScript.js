@@ -11,10 +11,6 @@ function mostrarSeleccion(valor) {
 // Agregar eventos de clic a los botones de horarios
 timeButtons.forEach(button => {
   button.addEventListener('click', () => {
-    // Remover el estilo activo de todos los botones
-    //timeButtons.forEach(btn => btn.classList.remove('active'));
-    // Agregar el estilo activo al botón seleccionado
-    //button.classList.add('active');
     selectedTime = button.textContent;
     mostrarSeleccion(selectedTime); //mostrar la hora seleccionada
     console.log(`Horario seleccionado: ${selectedTime}`);
@@ -34,10 +30,10 @@ searchButton.addEventListener('click', () => {
   })
   .then(response => response.json())
   .then(() => {
-    window.location.href = "/infoUser/"; //abrir hora.html;
+    window.location.href = "/infoUser/"; //abrir infoUser.html;
   })
   .catch(error => console.error("Error al guardar la fecha:", error));
-    alert(`Has seleccionado el horario: ${selectedTime}`);
+    
   } else {
     alert('Por favor, selecciona un horario para tu reserva.');
   }
