@@ -24,6 +24,7 @@ from reservas.views import reserva
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('reservations/', include('reservation.urls')),
     path('', reserva),
     path('reservas/', include('reservas.urls')),
 ]

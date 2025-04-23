@@ -1,0 +1,92 @@
+{% extends 'reservation/base.html' %}
+
+{% block title %}Paso 2: Fecha y Hora | Crear Reserva{% endblock %}
+{% block header_title %}Crear Nueva Reserva{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Script para actualizar las horas disponibles cuando la fecha cambia
+    document.addEventListener('DOMContentLoaded', function() {
+        const dateField = document.getElementById('id_date');
+        if (dateField) {
+            dateField.addEventListener('change', function() {
+                // Envía el formulario automáticamente para refrescar las horas disponibles
+                this.form.submit();
+            });
+        }
+    });
+</script>
+{% endblock %}
+
+{% block step_indicator %}
+<div class="step-indicator">
+    <div class="step completed">
+        <span class="step-number">1</span>
+        <div class="step-title">Personas</div>
+    </div>
+    <div class="step active">
+        <span class="step-number">2</span>
+        <div class="step-title">Fecha y Hora</div>
+    </div>
+    <div class="step">
+        <span class="step-number">3</span>
+        <div class="step-title">Contacto</div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+        <h5 class="card-title mb-0">Paso 2: Selección de fecha y hora</h5>
+    </div>
+    <div class="card-body">
+        <form method="post" class="p-3">
+            {% csrf_token %}
+            
+            <div class="mb-4">
+                <h6>¿Cuándo desea hacer su reserva?</h6>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        {% if form.date.errors %}
+                        <div class="alert alert-danger">
+                            {{ form.date.errors }}
+                        </div>
+                        {% endif %}
+                        
+                        <div class="form-group mb-3">
+                            <label for="{{ form.date.id_for_label }}" class="form-label">{{ form.date.label|default:"Fecha" }}</label>
+                            {{ form.date }}
+                            {% if form.date.help_text %}
+                            <div class="form-text text-muted">{{ form.date.help_text }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        {% if form.time.errors %}
+                        <div class="alert alert-danger">
+                            {{ form.time.errors }}
+                        </div>
+                        {% endif %}
+                        
+                        <div class="form-group mb-3">
+                            <label for="{{ form.time.id_for_label }}" class="form-label">{{ form.time.label|default:"Hora" }}</label>
+                            {{ form.time }}
+                            {% if form.time.help_text %}
+                            <div class="form-text text-muted">{{ form.time.help_text }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="d-flex justify-content-between">
+                <a href="{% url 'reservation_create_step1' %}" class="btn btn-outline-secondary">Atrás</a>
+                <button type="submit" class="btn btn-primary">Continuar</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

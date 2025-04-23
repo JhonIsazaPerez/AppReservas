@@ -186,3 +186,22 @@ class Reservation(models.Model):
     def can_cancel(self):
         """Verifica si la reserva puede ser cancelada"""
         return self._state_object.can_cancel()
+    
+
+    @staticmethod
+    def get_unavailable_times(date):
+        """Retorna una lista de horas que ya están reservadas para una fecha específica"""
+        # Obtener reservas confirmadas para esa fecha
+        confirmed_reservations = Reservation.objects.filter(
+            date=date,
+            state__in=[
+                Reservation.StateChoices.CONFIRMED,
+                Reservation.StateChoices.PENDING  # Opcional: también considerar pendientes
+            ]
+        )
+        # Extraer las horas de las reservas existentes
+        unavailable_times = [
+            reservation.time.strftime('%H:%M:%S') 
+            for reservation in confirmed_reservations
+        ]
+        return unavailable_times
