@@ -28,6 +28,7 @@ from reservas.views import infoUser
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('reservations/', include('reservation.urls')),
     path('', reserva),
     path('reservas/', include('reservas.urls')),
     path('calendario/', include('reservas.urls')),
