@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reserva</title>
+  <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
+
+  <meta name="csrf-token" content="{{ csrf_token }}">
+</head>
+<body>
+  <div class="container">
+    <h1>SELECCIONAR</h1>
+    <p>Número de personas</p>
+    <form method="POST">
+      {% csrf_token %}
+      <input type="hidden" id="number_of_people" name="number_of_people" value="">
+      <div class="buttons" id="buttons-container">
+        <button type="button" class="numero" value="1">1</button>
+        <button type="button" class="numero" value="2">2</button>
+        <button type="button" class="numero" value="3">3</button>
+        <button type="button" class="numero" value="4">4</button>
+        <button type="button" class="numero" value="5">5</button>
+        <button type="button" class="numero" value="6">6</button>
+        <button type="button" class="numero" value="7">7</button>
+        <button type="button" class="numero" value="8">8</button>
+        <button type="button" id="plus-button">+</button>
+      </div>
+      <button type="submit" class="search-button" id="search-reservation">BUSCAR RESERVA</button>      <div id="selected-value"></div>
+      <div id="selected-value"></div>
+    </form>
+  </div>
+
+  <!-- Modal -->
+  <div id="modal" class="modal hidden">
+    <div class="modal-content">
+      <h2>Ingrese un Número</h2>
+      <h3>Maximo de personas: 15</h3>
+      <input type="number" id="modal-input" placeholder="Máximo 15">
+      <button id="modal-confirm">Confirmar</button>
+      <button id="modal-close">Cerrar</button>
+    </div>
+  </div>
+  <script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>

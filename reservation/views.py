@@ -1,11 +1,12 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
+from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy, reverse
 from django.http import JsonResponse
 from .models import Reservation
-from .forms import ReservationPeopleForm, ReservationDateTimeForm, ReservationContactForm
+from .forms import ReservationDateTimeForm, ReservationContactForm
 
 class ReservationListView(ListView):
     model = Reservation
@@ -28,28 +29,27 @@ class ReservationDetailView(DetailView):
         return context
 
 # VISTAS PARA CREACIÓN DE RESERVAS (PROCESO DE 3 PASOS)
-
-class ReservationCreateStep1View(FormView):
-    """Paso 1: Selección de número de personas"""
-    form_class = ReservationPeopleForm
-    template_name = 'reservation/create_step1.html'
+class ReservationCreateStep1View(View):
+    """Paso 1: Selección de número de personas usando el template reserva.html"""
     
-    def form_valid(self, form):
-        # Guardar datos del paso 1 en sesión
-        self.request.session['reservation_step1'] = {
-            'number_of_people': form.cleaned_data['number_of_people']
-        }
-        return redirect('reservation_create_step2')
+    def get(self, request):
+        # Renderizar el template reserva.html
+        return render(request, 'reservation/reserva.html')
     
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        # Si hay datos en sesión de una visita anterior, rellenar el formulario
-        if 'reservation_step1' in self.request.session:
-            instance = Reservation(
-                number_of_people=self.request.session['reservation_step1'].get('number_of_people', 1)
-            )
-            kwargs.update({'instance': instance})
-        return kwargs
+    def post(self, request):
+        # Procesar los datos enviados desde el formulario/JavaScript
+        number_of_people = request.POST.get('number_of_people')
+        
+        if number_of_people and number_of_people.isdigit():
+            # Guardar en sesión
+            self.request.session['reservation_step1'] = {
+                'number_of_people': int(number_of_people)
+            }
+            return redirect('reservation_create_step2')
+        else:
+            # Si hay error, volver al formulario con un mensaje
+            messages.error(request, 'Por favor, seleccione un número válido de personas')
+            return render(request, 'reservation/reserva.html')
 
 class ReservationCreateStep2View(FormView):
     """Paso 2: Selección de fecha y hora"""
@@ -158,7 +158,6 @@ class ReservationCreateStep3View(FormView):
 class ReservationUpdateStep1View(UpdateView):
     """Paso 1: Actualizar número de personas"""
     model = Reservation
-    form_class = ReservationPeopleForm
     template_name = 'reservation/update_step1.html'
     
     def form_valid(self, form):

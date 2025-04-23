@@ -3,27 +3,6 @@ from django.utils.translation import gettext_lazy as _
 from datetime import time
 from .models import Reservation
 
-class ReservationPeopleForm(forms.ModelForm):
-    """Formulario para el primer paso: selección de número de personas"""
-    
-    class Meta:
-        model = Reservation
-        fields = ['number_of_people']
-        widgets = {
-            'number_of_people': forms.NumberInput(attrs={
-                'min': 1,
-                'max': 20,
-                'class': 'form-control',
-                'placeholder': 'Número de personas'
-            }),
-        }
-        labels = {
-            'number_of_people': _('Número de personas'),
-        }
-        help_texts = {
-            'number_of_people': _('Seleccione el número de personas para su reserva (máximo 20)'),
-        }
-
 class ReservationDateTimeForm(forms.ModelForm):
     """Formulario para el segundo paso: selección de fecha y hora"""
     
