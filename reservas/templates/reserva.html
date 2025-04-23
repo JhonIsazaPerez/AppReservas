@@ -6,6 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Reserva</title>
   <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
+  {% csrf_token %}
+  <meta name="csrf-token" content="{{ csrf_token }}">
 </head>
 <body>
   <div class="container">
@@ -22,7 +24,7 @@
       <button class="numero">8</button>
       <button id="plus-button">+</button>
     </div>
-    <button class="search-button">BUSCAR RESERVA</button>
+    <button class="search-button" id="search-reservation">BUSCAR RESERVA</button>
     <div id="selected-value"></div>
   </div>
 
@@ -36,7 +38,6 @@
       <button id="modal-close">Cerrar</button>
     </div>
   </div>
-
   <script src="{% static 'js/script.js' %}"></script>
 </body>
 </html>

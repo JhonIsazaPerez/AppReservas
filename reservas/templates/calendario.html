@@ -1,0 +1,23 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendario</title>
+  <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
+</head>
+<body>
+  <div class="calendar-container">
+    <h1 class="calendar-title">FECHA</h1>
+    <p class="calendar-subtitle">SELECCIONA LA FECHA PARA TU RESERVA</p>
+
+    <div class="calendar-wrapper">
+      <input type="date" id="reservation-date">
+    </div>
+
+    <button class="search-reserve-button" id="search-time">VER HORARIOS DISPONIBLES</button>
+  </div>
+</body>
+<script src="{% static 'js/calendarioScript.js' %}"></script>
+</html>
