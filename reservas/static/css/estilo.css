@@ -1,6 +1,7 @@
 /* General */
 body {
-  background-color: #5C2A2A; /* Fondo marrón oscuro */
+  background-color: #5C2A2A;
+  /* Fondo marrón oscuro */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -80,7 +81,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); 
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -125,6 +126,7 @@ body {
   border: 2px solid #5C2A2A;
   border-radius: 5px;
 }
+
 /* Estilo para el calendario que aparece después de escoger numero de personas */
 
 .calendar-container {
@@ -179,6 +181,7 @@ body {
 .search-reserve-button:hover {
   background-color: #752D2D;
 }
+
 /* Estilo para la selección de hora */
 .time-selection {
   background-color: #592727;
@@ -281,6 +284,7 @@ button:hover {
 button:active {
   background-color: #449d44;
 }
+
 .hidden {
-  display: none; 
+  display: none;
 }
