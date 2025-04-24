@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.views import View
@@ -6,7 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy, reverse
 from django.http import JsonResponse
 from .models import Reservation
-from .forms import ReservationDateTimeForm, ReservationContactForm
+from .forms import ReservationDateForm, ReservationContactForm, ReservationTimeForm
 
 class ReservationListView(ListView):
     model = Reservation
@@ -51,10 +52,9 @@ class ReservationCreateStep1View(View):
             messages.error(request, 'Por favor, seleccione un número válido de personas')
             return render(request, 'reservation/reserva.html')
 
-class ReservationCreateStep2View(FormView):
-    """Paso 2: Selección de fecha y hora"""
-    form_class = ReservationDateTimeForm
-    template_name = 'reservation/create_step2.html'
+class ReservationCreateStep2View(View):
+    """Paso 2: Selección de fecha (primera parte)"""
+    template_name = 'reservation/create_step2_date.html'
     
     def dispatch(self, request, *args, **kwargs):
         # Verificar si se completó el paso 1
@@ -62,29 +62,97 @@ class ReservationCreateStep2View(FormView):
             return redirect('reservation_create_step1')
         return super().dispatch(request, *args, **kwargs)
     
-    def form_valid(self, form):
-        # Guardar datos del paso 2 en sesión
-        self.request.session['reservation_step2'] = {
-            'date': form.cleaned_data['date'].isoformat(),
-            'time': form.cleaned_data['time']
-        }
-        return redirect('reservation_create_step3')
-    
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        # Si hay datos en sesión de una visita anterior, rellenar el formulario
-        if 'reservation_step2' in self.request.session:
-            from datetime import datetime
-            
-            date_str = self.request.session['reservation_step2'].get('date')
+    def get(self, request):
+        # Crear formulario de fecha
+        initial_data = {}
+        
+        # Si hay datos en sesión, cargarlos en el formulario
+        if 'reservation_step2' in request.session and 'date' in request.session['reservation_step2']:
+            date_str = request.session['reservation_step2']['date']
             date_obj = datetime.fromisoformat(date_str).date() if date_str else None
+            if date_obj:
+                initial_data['date'] = date_obj
+        
+        form = ReservationDateForm(initial=initial_data)
+        return render(request, self.template_name, {'form': form})
+    
+    def post(self, request):
+        form = ReservationDateForm(request.POST)
+        
+        if form.is_valid():
+            date = form.cleaned_data['date']
             
-            instance = Reservation(
-                date=date_obj,
-                time=self.request.session['reservation_step2'].get('time')
-            )
-            kwargs.update({'instance': instance})
-        return kwargs
+            # Guardar fecha en sesión
+            if 'reservation_step2' not in request.session:
+                request.session['reservation_step2'] = {}
+            
+            request.session['reservation_step2']['date'] = date.isoformat()
+            
+            # Redireccionar al siguiente paso (selección de hora)
+            return redirect('reservation_create_step2_time')
+        
+        return render(request, self.template_name, {'form': form})
+
+class ReservationCreateStep2TimeView(View):
+    """Paso 2: Selección de hora (segunda parte)"""
+    template_name = 'reservation/create_step2_time.html'
+    
+    def dispatch(self, request, *args, **kwargs):
+        # Verificar si se completaron los pasos anteriores
+        if 'reservation_step1' not in request.session:
+            return redirect('reservation_create_step1')
+        
+        if 'reservation_step2' not in request.session or 'date' not in request.session['reservation_step2']:
+            return redirect('reservation_create_step2')
+            
+        return super().dispatch(request, *args, **kwargs)
+    
+    def get(self, request):
+        # Obtener la fecha seleccionada
+        date_str = request.session['reservation_step2']['date']
+        date_obj = datetime.fromisoformat(date_str).date()
+        
+        # Obtener hora actual si existe
+        current_time = None
+        if 'time' in request.session['reservation_step2']:
+            current_time = request.session['reservation_step2']['time']
+        
+        # Crear instancia temporal para el formulario
+        instance = None
+        if current_time:
+            instance = Reservation(time=current_time)
+        
+        # Crear formulario de hora
+        form = ReservationTimeForm(selected_date=date_obj, instance=instance)
+        
+        context = {
+            'form': form,
+            'selected_date': date_obj
+        }
+        return render(request, self.template_name, context)
+    
+    def post(self, request):
+        # Obtener la fecha seleccionada
+        date_str = request.session['reservation_step2']['date']
+        date_obj = datetime.fromisoformat(date_str).date()
+        
+        # Procesar formulario
+        form = ReservationTimeForm(request.POST, selected_date=date_obj)
+        
+        if form.is_valid():
+            time = form.cleaned_data['time']
+            
+            # Guardar hora en sesión
+            request.session['reservation_step2']['time'] = time
+            
+            # Redireccionar al siguiente paso
+            return redirect('reservation_create_step3')
+        
+        context = {
+            'form': form,
+            'selected_date': date_obj
+        }
+        return render(request, self.template_name, context)
 
 class ReservationCreateStep3View(FormView):
     """Paso 3: Información de contacto y confirmación"""
@@ -174,7 +242,6 @@ class ReservationUpdateStep1View(UpdateView):
 class ReservationUpdateStep2View(UpdateView):
     """Paso 2: Actualizar fecha y hora"""
     model = Reservation
-    form_class = ReservationDateTimeForm
     template_name = 'reservation/update_step2.html'
     
     def dispatch(self, request, *args, **kwargs):
@@ -259,32 +326,3 @@ def cancel_reservation(request, pk):
         messages.error(request, 'No se puede cancelar la reserva en su estado actual')
     return redirect('reservation_detail', pk=pk)
 
-# API para cambios de estado (opcional, para uso con AJAX)
-# EN CASO DE USAR JAVASCRIPT O AJAX EN EL FRONTEND
-"""def api_change_state(request, pk):
-    if request.method != 'POST':
-        return JsonResponse({'error': 'Método no permitido'}, status=405)
-    
-    action = request.POST.get('action')
-    reservation = get_object_or_404(Reservation, pk=pk)
-    result = False
-    
-    if action == 'confirm':
-        result = reservation.confirm()
-    elif action == 'finish':
-        result = reservation.finish()
-    elif action == 'cancel':
-        result = reservation.cancel()
-    
-    if result:
-        return JsonResponse({
-            'success': True,
-            'state': reservation.state,
-            'state_display': reservation.get_state_display()
-        })
-    else:
-        return JsonResponse({
-            'success': False,
-            'error': 'No se pudo cambiar el estado de la reserva'
-        })
-"""

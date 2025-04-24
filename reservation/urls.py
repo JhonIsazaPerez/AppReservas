@@ -7,6 +7,7 @@ urlpatterns = [
     # Rutas para el proceso de creación en 3 pasos
     path('new/step1/', views.ReservationCreateStep1View.as_view(), name='reservation_create_step1'),
     path('new/step2/', views.ReservationCreateStep2View.as_view(), name='reservation_create_step2'),
+    path('new/step2/time/', views.ReservationCreateStep2TimeView.as_view(), name='reservation_create_step2_time'),
     path('new/step3/', views.ReservationCreateStep3View.as_view(), name='reservation_create_step3'),
     
     # Redirigir la ruta original de new/ al paso 1

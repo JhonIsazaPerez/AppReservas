@@ -3,45 +3,54 @@ from django.utils.translation import gettext_lazy as _
 from datetime import time
 from .models import Reservation
 
-class ReservationDateTimeForm(forms.ModelForm):
-    """Formulario para el segundo paso: selección de fecha y hora"""
+class ReservationDateForm(forms.ModelForm):
+    """Formulario para seleccionar la fecha de reserva"""
     
     class Meta:
         model = Reservation
-        fields = ['date', 'time']
+        fields = ['date']
         widgets = {
-            'date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'date': forms.DateInput(attrs={
+                'type': 'date', 
+                'class': 'form-control',
+                'id': 'reservation-date'
+            }),
         }
+        labels = {
+            'date': _('Fecha de reserva'),
+        }
+        help_texts = {
+            'date': _('Seleccione la fecha para su reserva'),
+        }
+
+class ReservationTimeForm(forms.Form):
+    """Formulario para seleccionar la hora de reserva"""
     
-    def __init__(self, *args, **kwargs):
+    time = forms.ChoiceField(
+        choices=[],
+        label=_('Hora'),
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        help_text=_('Seleccione una hora disponible para su reserva')
+    )
+    
+    def __init__(self, *args, selected_date=None, instance=None, **kwargs):
         super().__init__(*args, **kwargs)
         
-        # Si tenemos una fecha seleccionada, filtramos las horas disponibles
-        if 'date' in self.data:
-            selected_date = self.data.get('date')
-            if selected_date:
-                self._set_available_hours(selected_date)
-        
-        # En caso de edición, también mostrar las horas disponibles
-        elif self.instance and self.instance.pk and self.instance.date:
-            self._set_available_hours(self.instance.date)
+        if selected_date:
+            self._set_available_hours(selected_date, instance)
         else:
-            # Si no hay fecha seleccionada, mostrar mensaje para seleccionar fecha primero
-            self.fields['time'] = forms.ChoiceField(
-                choices=[],
-                label=_('Hora'),
-                help_text=_('Seleccione una fecha primero para ver las horas disponibles')
-            )
+            self.fields['time'].choices = []
+            self.fields['time'].help_text = _('Seleccione una fecha primero para ver las horas disponibles')
     
-    def _set_available_hours(self, selected_date):
+    def _set_available_hours(self, selected_date, instance=None):
         """Configura las horas disponibles para una fecha seleccionada"""
         # Obtener horas ocupadas para esa fecha
         unavailable_times = Reservation.get_unavailable_times(selected_date)
         
         # Si estamos editando, permitir la hora actual
         current_time = None
-        if self.instance and self.instance.pk:
-            current_time = self.instance.time.strftime('%H:%M:%S')
+        if instance and instance.pk:
+            current_time = instance.time.strftime('%H:%M:%S')
         
         # Crear opciones de hora en intervalos de 1 hora (9:00 a 22:00)
         available_hours = []
@@ -55,12 +64,10 @@ class ReservationDateTimeForm(forms.ModelForm):
                 available_hours.append((time_str, formatted_time))
         
         # Actualizar el campo time para mostrar solo horas disponibles
-        self.fields['time'] = forms.ChoiceField(
-            choices=available_hours,
-            label=_('Hora'),
-            widget=forms.Select(attrs={'class': 'form-control'}),
-            help_text=_('Seleccione una hora disponible para su reserva')
-        )
+        self.fields['time'].choices = available_hours
+        
+        if not available_hours:
+            self.fields['time'].help_text = _('No hay horas disponibles para esta fecha. Por favor, seleccione otra fecha.')
 
 class ReservationContactForm(forms.ModelForm):
     """Formulario para el tercer paso: información de contacto"""
