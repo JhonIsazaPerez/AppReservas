@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-  // Elementos principales
+  // Elementos principales 
   const numeroButtons = document.querySelectorAll('.numero');
   const plusButton = document.getElementById('plus-button');
   const modal = document.getElementById('modal');
@@ -62,7 +62,6 @@ document.addEventListener('DOMContentLoaded', function() {
           alert('Por favor seleccione un número de personas');
           return false;
       }
-      
       // Asegurarse que el formulario se envía a la URL correcta
       // NOTA: No modificar action si ya está configurado correctamente
       if (!form.action || form.action.includes('/guardarDatos/')) {

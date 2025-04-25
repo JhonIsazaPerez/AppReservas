@@ -1,11 +1,10 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
-from datetime import time
+from datetime import datetime, timedelta, time
 from .models import Reservation
 
 class ReservationDateForm(forms.ModelForm):
     """Formulario para seleccionar la fecha de reserva"""
-    
     class Meta:
         model = Reservation
         fields = ['date']
@@ -13,19 +12,22 @@ class ReservationDateForm(forms.ModelForm):
             'date': forms.DateInput(attrs={
                 'type': 'date', 
                 'class': 'form-control',
-                'id': 'reservation-date'
+                'id': 'reservation-date', 
+                'initial': datetime.now().date().strftime('%Y-%m-%d'), 
+                'placeholder': datetime.now().date().strftime('%Y-%m-%d'),
+                'value': datetime.now().date().strftime('%d-%m-%y'),
             }),
         }
         labels = {
             'date': _('Fecha de reserva'),
         }
-        help_texts = {
-            'date': _('Seleccione la fecha para su reserva'),
-        }
+
+        
 
 class ReservationTimeForm(forms.Form):
     """Formulario para seleccionar la hora de reserva"""
     
+
     time = forms.ChoiceField(
         choices=[],
         label=_('Hora'),

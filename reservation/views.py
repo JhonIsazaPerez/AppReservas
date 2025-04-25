@@ -12,7 +12,7 @@ from .forms import ReservationDateForm, ReservationContactForm, ReservationTimeF
 class ReservationListView(ListView):
     model = Reservation
     context_object_name = 'reservations'
-    template_name = 'reservation/reservation_list.html'
+    template_name = 'reservation/calendario.html'
     ordering = ['-date', '-time']
 
 class ReservationDetailView(DetailView):
@@ -54,7 +54,7 @@ class ReservationCreateStep1View(View):
 
 class ReservationCreateStep2View(View):
     """Paso 2: Selección de fecha (primera parte)"""
-    template_name = 'reservation/create_step2_date.html'
+    template_name = 'reservation/calendario.html'
     
     def dispatch(self, request, *args, **kwargs):
         # Verificar si se completó el paso 1
@@ -64,8 +64,7 @@ class ReservationCreateStep2View(View):
     
     def get(self, request):
         # Crear formulario de fecha
-        initial_data = {}
-        
+        initial_data = {}  
         # Si hay datos en sesión, cargarlos en el formulario
         if 'reservation_step2' in request.session and 'date' in request.session['reservation_step2']:
             date_str = request.session['reservation_step2']['date']
@@ -95,7 +94,7 @@ class ReservationCreateStep2View(View):
 
 class ReservationCreateStep2TimeView(View):
     """Paso 2: Selección de hora (segunda parte)"""
-    template_name = 'reservation/create_step2_time.html'
+    template_name = 'reservation/reserva.html'
     
     def dispatch(self, request, *args, **kwargs):
         # Verificar si se completaron los pasos anteriores
