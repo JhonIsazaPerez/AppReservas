@@ -12,7 +12,7 @@ from .forms import ReservationDateForm, ReservationContactForm, ReservationTimeF
 class ReservationListView(ListView):
     model = Reservation
     context_object_name = 'reservations'
-    template_name = 'reservation/reservation_list.html'
+    template_name = 'reservation/calendario.html'
     ordering = ['-date', '-time']
 
 class ReservationDetailView(DetailView):
@@ -94,7 +94,11 @@ class ReservationCreateStep2View(View):
 
 class ReservationCreateStep2TimeView(View):
     """Paso 2: Selección de hora (segunda parte)"""
+<<<<<<< HEAD
     template_name = 'reservation/time.html'
+=======
+    template_name = 'reservation/reserva.html'
+>>>>>>> 97394bdbee1a9cc9910d1a036baf689a1577a20f
     
     def dispatch(self, request, *args, **kwargs):
         # Verificar si se completaron los pasos anteriores
