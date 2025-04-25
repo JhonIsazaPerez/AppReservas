@@ -21,11 +21,6 @@ class ReservationDateForm(forms.ModelForm):
         labels = {
             'date': _('Fecha de reserva'),
         }
-<<<<<<< HEAD
-=======
-
-        
->>>>>>> 97394bdbee1a9cc9910d1a036baf689a1577a20f
 
 class ReservationTimeForm(forms.Form):
     """Formulario para seleccionar la hora de reserva"""

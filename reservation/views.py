@@ -94,11 +94,7 @@ class ReservationCreateStep2View(View):
 
 class ReservationCreateStep2TimeView(View):
     """Paso 2: Selección de hora (segunda parte)"""
-<<<<<<< HEAD
     template_name = 'reservation/time.html'
-=======
-    template_name = 'reservation/reserva.html'
->>>>>>> 97394bdbee1a9cc9910d1a036baf689a1577a20f
     
     def dispatch(self, request, *args, **kwargs):
         # Verificar si se completaron los pasos anteriores
