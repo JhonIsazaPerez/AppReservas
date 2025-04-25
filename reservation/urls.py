@@ -16,6 +16,7 @@ urlpatterns = [
     # Rutas para el proceso de edición en 3 pasos
     path('<int:pk>/edit/step1/', views.ReservationUpdateStep1View.as_view(), name='reservation_update_step1'),
     path('<int:pk>/edit/step2/', views.ReservationUpdateStep2View.as_view(), name='reservation_update_step2'),
+    path('<int:pk>/edit/step2/time/', views.ReservationUpdateStep2TimeView.as_view(), name='reservation_update_step2_time'),
     path('<int:pk>/edit/step3/', views.ReservationUpdateStep3View.as_view(), name='reservation_update_step3'),
     
     # Redirigir la ruta original de edit/ al paso 1

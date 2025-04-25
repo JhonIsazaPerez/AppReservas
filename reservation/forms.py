@@ -1,11 +1,10 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
-from datetime import time
+from datetime import datetime, timedelta, time
 from .models import Reservation
 
 class ReservationDateForm(forms.ModelForm):
     """Formulario para seleccionar la fecha de reserva"""
-    
     class Meta:
         model = Reservation
         fields = ['date']
@@ -13,14 +12,14 @@ class ReservationDateForm(forms.ModelForm):
             'date': forms.DateInput(attrs={
                 'type': 'date', 
                 'class': 'form-control',
-                'id': 'reservation-date'
+                'id': 'reservation-date', 
+                'initial': datetime.now().date().strftime('%Y-%m-%d'), 
+                'placeholder': datetime.now().date().strftime('%Y-%m-%d'),
+                'value': datetime.now().date().strftime('%d-%m-%y'),
             }),
         }
         labels = {
             'date': _('Fecha de reserva'),
-        }
-        help_texts = {
-            'date': _('Seleccione la fecha para su reserva'),
         }
 
 class ReservationTimeForm(forms.Form):
@@ -74,22 +73,15 @@ class ReservationContactForm(forms.ModelForm):
     
     class Meta:
         model = Reservation
-        fields = ['name', 'phone_number']
+        fields = ['name', 'email']
         widgets = {
-            'name': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Nombre completo'
-            }),
-            'phone_number': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Número telefónico',
-                'pattern': '[0-9]{10}'  # Patrón para 10 dígitos
-            }),
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
         }
         labels = {
             'name': _('Nombre'),
-            'phone_number': _('Teléfono de contacto'),
+            'email': _('Correo electrónico'),
         }
         help_texts = {
-            'phone_number': _('Ingrese un número telefónico válido sin espacios ni guiones'),
+            'email': _('Recibirá un correo de confirmación con los detalles de su reserva'),
         }
