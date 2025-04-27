@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from abc import ABC, abstractmethod
+from django.core.validators import EmailValidator
 
 # Clase abstracta base para los estados
 class ReservationState(ABC):
@@ -119,7 +120,7 @@ class Reservation(models.Model):
         CANCELLED = 'cancelled', _('Cancelada')
     
     name = models.CharField(max_length=100)
-    phone_number = models.CharField(max_length=15)
+    email = models.EmailField(validators=[EmailValidator()], default="example@gmail.com")  # Cambiado desde phone_number
     date = models.DateField()
     time = models.TimeField()
     number_of_people = models.IntegerField()
