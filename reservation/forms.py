@@ -22,8 +22,6 @@ class ReservationDateForm(forms.ModelForm):
             'date': _('Fecha de reserva'),
         }
 
-        
-
 class ReservationTimeForm(forms.Form):
     """Formulario para seleccionar la hora de reserva"""
     
@@ -76,22 +74,15 @@ class ReservationContactForm(forms.ModelForm):
     
     class Meta:
         model = Reservation
-        fields = ['name', 'phone_number']
+        fields = ['name', 'email']
         widgets = {
-            'name': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Nombre completo'
-            }),
-            'phone_number': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Número telefónico',
-                'pattern': '[0-9]{10}'  # Patrón para 10 dígitos
-            }),
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
         }
         labels = {
             'name': _('Nombre'),
-            'phone_number': _('Teléfono de contacto'),
+            'email': _('Correo electrónico'),
         }
         help_texts = {
-            'phone_number': _('Ingrese un número telefónico válido sin espacios ni guiones'),
+            'email': _('Recibirá un correo de confirmación con los detalles de su reserva'),
         }

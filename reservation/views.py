@@ -94,7 +94,7 @@ class ReservationCreateStep2View(View):
 
 class ReservationCreateStep2TimeView(View):
     """Paso 2: Selección de hora (segunda parte)"""
-    template_name = 'reservation/reserva.html'
+    template_name = 'reservation/time.html'
     
     def dispatch(self, request, *args, **kwargs):
         # Verificar si se completaron los pasos anteriores
@@ -153,11 +153,9 @@ class ReservationCreateStep2TimeView(View):
         }
         return render(request, self.template_name, context)
 
-class ReservationCreateStep3View(FormView):
+class ReservationCreateStep3View(View):
     """Paso 3: Información de contacto y confirmación"""
-    form_class = ReservationContactForm
     template_name = 'reservation/create_step3.html'
-    success_url = reverse_lazy('reservation_list')
     
     def dispatch(self, request, *args, **kwargs):
         # Verificar si se completaron los pasos anteriores
@@ -165,83 +163,120 @@ class ReservationCreateStep3View(FormView):
             return redirect('reservation_create_step1')
         return super().dispatch(request, *args, **kwargs)
     
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        # Añadir información de los pasos anteriores para revisión
-        step1_data = self.request.session.get('reservation_step1', {})
-        step2_data = self.request.session.get('reservation_step2', {})
+    def get(self, request):
+        # Obtener datos de los pasos anteriores
+        step1_data = request.session.get('reservation_step1', {})
+        step2_data = request.session.get('reservation_step2', {})
         
-        context.update({
+        # Crear formulario
+        form = ReservationContactForm()
+        
+        # Si hay datos en sesión de una visita anterior, rellenar el formulario
+        if 'reservation_step3' in request.session:
+            instance = Reservation(
+                name=request.session['reservation_step3'].get('name', ''),
+                email=request.session['reservation_step3'].get('email', '')
+            )
+            form = ReservationContactForm(instance=instance)
+        
+        context = {
+            'form': form,
             'number_of_people': step1_data.get('number_of_people'),
             'date': step2_data.get('date'),
             'time': step2_data.get('time'),
-        })
-        return context
+        }
+        return render(request, self.template_name, context)
     
-    def form_valid(self, form):
-        # Crear una reserva combinando todos los datos de los pasos
-        from datetime import datetime
+    def post(self, request):
+        # Obtener datos de los pasos anteriores
+        step1_data = request.session.get('reservation_step1', {})
+        step2_data = request.session.get('reservation_step2', {})
         
-        step1_data = self.request.session['reservation_step1']
-        step2_data = self.request.session['reservation_step2']
+        # Procesar el formulario
+        form = ReservationContactForm(request.POST)
         
-        date_str = step2_data.get('date')
-        date_obj = datetime.fromisoformat(date_str).date() if date_str else None
-        
-        reservation = Reservation(
-            name=form.cleaned_data['name'],
-            phone_number=form.cleaned_data['phone_number'],
-            number_of_people=step1_data.get('number_of_people'),
-            date=date_obj,
-            time=step2_data.get('time'),
-            state=Reservation.StateChoices.PENDING
-        )
-        reservation.save()
-        
-        # Limpiar datos de sesión
-        if 'reservation_step1' in self.request.session:
-            del self.request.session['reservation_step1']
-        if 'reservation_step2' in self.request.session:
-            del self.request.session['reservation_step2']
-        if 'reservation_step3' in self.request.session:
-            del self.request.session['reservation_step3']
-        
-        messages.success(self.request, 'Reserva creada con éxito. Estado: Pendiente')
-        return super().form_valid(form)
-    
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        # Si hay datos en sesión de una visita anterior, rellenar el formulario
-        if 'reservation_step3' in self.request.session:
-            instance = Reservation(
-                name=self.request.session['reservation_step3'].get('name', ''),
-                phone_number=self.request.session['reservation_step3'].get('phone_number', '')
+        if form.is_valid():
+            # Crear una reserva combinando todos los datos de los pasos
+            from datetime import datetime
+            
+            date_str = step2_data.get('date')
+            date_obj = datetime.fromisoformat(date_str).date() if date_str else None
+            
+            reservation = Reservation(
+                name=form.cleaned_data['name'],
+                email=form.cleaned_data['email'],
+                number_of_people=step1_data.get('number_of_people'),
+                date=date_obj,
+                time=step2_data.get('time'),
+                state=Reservation.StateChoices.PENDING
             )
-            kwargs.update({'instance': instance})
-        return kwargs
+            reservation.save()
+            
+            # Limpiar datos de sesión
+            if 'reservation_step1' in request.session:
+                del request.session['reservation_step1']
+            if 'reservation_step2' in request.session:
+                del request.session['reservation_step2']
+            if 'reservation_step3' in request.session:
+                del request.session['reservation_step3']
+            
+            messages.success(request, 'Reserva creada con éxito. Estado: Pendiente')
+            return redirect('reservation_list')
+        
+        # Si el formulario no es válido, volver a mostrar con errores
+        context = {
+            'form': form,
+            'number_of_people': step1_data.get('number_of_people'),
+            'date': step2_data.get('date'),
+            'time': step2_data.get('time'),
+        }
+        return render(request, self.template_name, context)
 
 # VISTAS PARA ACTUALIZACIÓN DE RESERVAS (PROCESO DE 3 PASOS)
 
-class ReservationUpdateStep1View(UpdateView):
+class ReservationUpdateStep1View(View):  # Cambiamos de UpdateView a View
     """Paso 1: Actualizar número de personas"""
-    model = Reservation
-    template_name = 'reservation/update_step1.html'
+    template_name = 'reservation/reserva.html'  # Usar el mismo template que en creación
     
-    def form_valid(self, form):
-        reservation = self.get_object()
-        # Guardar el número de personas actualizado
-        reservation.number_of_people = form.cleaned_data['number_of_people']
-        reservation.save()
+    def get(self, request, pk):
+        # Obtener la reserva existente
+        reservation = get_object_or_404(Reservation, pk=pk)
         
-        # Guardar referencia al ID de la reserva en sesión para los siguientes pasos
-        self.request.session['editing_reservation_id'] = reservation.id
+        # Guardar ID en sesión para el flujo de edición
+        request.session['editing_reservation_id'] = reservation.id
         
-        return redirect('reservation_update_step2', pk=reservation.id)
+        # Pasar el valor actual para pre-seleccionar en la interfaz
+        context = {
+            'object': reservation,
+            'initial_value': reservation.number_of_people
+        }
+        return render(request, self.template_name, context)
+    
+    def post(self, request, pk):
+        # Obtener la reserva existente
+        reservation = get_object_or_404(Reservation, pk=pk)
+        
+        # Procesar los datos enviados desde el formulario
+        number_of_people = request.POST.get('number_of_people')
+        
+        if number_of_people and number_of_people.isdigit():
+            # Actualizar número de personas
+            reservation.number_of_people = int(number_of_people)
+            reservation.save()
+            
+            # Guardar ID en sesión para siguientes pasos
+            request.session['editing_reservation_id'] = reservation.id
+            
+            # Redirigir al siguiente paso
+            return redirect('reservation_update_step2', pk=reservation.id)
+        else:
+            # Si hay error, volver al formulario con un mensaje
+            messages.error(request, 'Por favor, seleccione un número válido de personas')
+            return render(request, self.template_name, {'object': reservation})
 
-class ReservationUpdateStep2View(UpdateView):
-    """Paso 2: Actualizar fecha y hora"""
-    model = Reservation
-    template_name = 'reservation/update_step2.html'
+class ReservationUpdateStep2View(View):
+    """Paso 2: Actualizar fecha (primera parte)"""
+    template_name = 'reservation/calendario.html'  # Usar el mismo template que en creación
     
     def dispatch(self, request, *args, **kwargs):
         # Verificar si venimos del paso anterior o es edición directa
@@ -254,21 +289,111 @@ class ReservationUpdateStep2View(UpdateView):
         
         return super().dispatch(request, *args, **kwargs)
     
-    def form_valid(self, form):
-        reservation = self.get_object()
-        # Guardar la fecha y hora actualizadas
-        reservation.date = form.cleaned_data['date']
-        reservation.time = form.cleaned_data['time']
-        reservation.save()
+    def get(self, request, pk):
+        # Obtener la reserva existente
+        reservation = get_object_or_404(Reservation, pk=pk)
         
-        return redirect('reservation_update_step3', pk=reservation.id)
+        # Crear formulario con la fecha actual
+        initial_data = {'date': reservation.date}
+        form = ReservationDateForm(initial=initial_data)
+        
+        # Guardar datos temporales en sesión
+        if 'editing_reservation_step2' not in request.session:
+            request.session['editing_reservation_step2'] = {}
+            
+        request.session['editing_reservation_step2']['date'] = reservation.date.isoformat()
+        
+        return render(request, self.template_name, {'form': form, 'object': reservation})
+    
+    def post(self, request, pk):
+        # Obtener la reserva existente
+        reservation = get_object_or_404(Reservation, pk=pk)
+        
+        # Procesar el formulario
+        form = ReservationDateForm(request.POST)
+        
+        if form.is_valid():
+            date = form.cleaned_data['date']
+            
+            # Guardar fecha en sesión
+            if 'editing_reservation_step2' not in request.session:
+                request.session['editing_reservation_step2'] = {}
+                
+            request.session['editing_reservation_step2']['date'] = date.isoformat()
+            
+            # Redireccionar al siguiente paso (selección de hora)
+            return redirect('reservation_update_step2_time', pk=pk)
+        
+        return render(request, self.template_name, {'form': form, 'object': reservation})
 
-class ReservationUpdateStep3View(UpdateView):
+class ReservationUpdateStep2TimeView(View):
+    """Paso 2: Actualizar hora (segunda parte)"""
+    template_name = 'reservation/create_step2_time.html'  # Usar el mismo template que en creación
+    
+    def dispatch(self, request, *args, **kwargs):
+        # Verificar si se completaron los pasos anteriores
+        reservation_id = kwargs.get('pk')
+        session_id = request.session.get('editing_reservation_id')
+        
+        if session_id != reservation_id:
+            return redirect('reservation_update_step1', pk=reservation_id)
+        
+        if 'editing_reservation_step2' not in request.session or 'date' not in request.session['editing_reservation_step2']:
+            return redirect('reservation_update_step2', pk=reservation_id)
+            
+        return super().dispatch(request, *args, **kwargs)
+    
+    def get(self, request, pk):
+        # Obtener la reserva existente
+        reservation = get_object_or_404(Reservation, pk=pk)
+        
+        # Obtener la fecha seleccionada
+        date_str = request.session['editing_reservation_step2']['date']
+        date_obj = datetime.fromisoformat(date_str).date()
+        
+        # Crear formulario de hora con la hora actual
+        form = ReservationTimeForm(selected_date=date_obj, instance=reservation)
+        
+        context = {
+            'form': form,
+            'selected_date': date_obj,
+            'object': reservation
+        }
+        return render(request, self.template_name, context)
+    
+    def post(self, request, pk):
+        # Obtener la reserva existente
+        reservation = get_object_or_404(Reservation, pk=pk)
+        
+        # Obtener la fecha seleccionada
+        date_str = request.session['editing_reservation_step2']['date']
+        date_obj = datetime.fromisoformat(date_str).date()
+        
+        # Procesar formulario
+        form = ReservationTimeForm(request.POST, selected_date=date_obj, instance=reservation)
+        
+        if form.is_valid():
+            time = form.cleaned_data['time']
+            
+            # Actualizar la reserva con los nuevos valores
+            reservation.date = date_obj
+            reservation.time = time
+            reservation.save()
+            
+            # Redireccionar al siguiente paso
+            return redirect('reservation_update_step3', pk=reservation.id)
+        
+        context = {
+            'form': form,
+            'selected_date': date_obj,
+            'object': reservation
+        }
+        return render(request, self.template_name, context)
+
+
+class ReservationUpdateStep3View(View):
     """Paso 3: Actualizar información de contacto"""
-    model = Reservation
-    form_class = ReservationContactForm
-    template_name = 'reservation/update_step3.html'
-    success_url = reverse_lazy('reservation_list')
+    template_name = 'reservation/create_step3.html'  # Usar el mismo template que en creación
     
     def dispatch(self, request, *args, **kwargs):
         # Verificar si venimos del paso anterior o es edición directa
@@ -281,24 +406,51 @@ class ReservationUpdateStep3View(UpdateView):
         
         return super().dispatch(request, *args, **kwargs)
     
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        reservation = self.get_object()
-        # Añadir información de los campos ya actualizados para revisión
-        context.update({
+    def get(self, request, pk):
+        # Obtener la reserva existente
+        reservation = get_object_or_404(Reservation, pk=pk)
+        
+        # Crear formulario con los datos actuales de la reserva
+        form = ReservationContactForm(instance=reservation)
+        
+        context = {
+            'form': form,
+            'object': reservation,
             'number_of_people': reservation.number_of_people,
             'date': reservation.date,
             'time': reservation.time,
-        })
-        return context
+        }
+        return render(request, self.template_name, context)
     
-    def form_valid(self, form):
-        messages.success(self.request, 'Reserva actualizada con éxito.')
-        # Limpiar datos de sesión
-        if 'editing_reservation_id' in self.request.session:
-            del self.request.session['editing_reservation_id']
+    def post(self, request, pk):
+        # Obtener la reserva existente
+        reservation = get_object_or_404(Reservation, pk=pk)
+        
+        # Procesar el formulario
+        form = ReservationContactForm(request.POST, instance=reservation)
+        
+        if form.is_valid():
+            # Guardar el formulario
+            form.save()
             
-        return super().form_valid(form)
+            # Limpiar datos de sesión
+            if 'editing_reservation_id' in request.session:
+                del request.session['editing_reservation_id']
+            if 'editing_reservation_step2' in request.session:
+                del request.session['editing_reservation_step2']
+            
+            messages.success(request, 'Reserva actualizada con éxito.')
+            return redirect('reservation_list')
+        
+        # Si el formulario no es válido, volver a mostrar con errores
+        context = {
+            'form': form,
+            'object': reservation,
+            'number_of_people': reservation.number_of_people,
+            'date': reservation.date,
+            'time': reservation.time,
+        }
+        return render(request, self.template_name, context)
 
 # Mantener las vistas para los cambios de estado
 def confirm_reservation(request, pk):
