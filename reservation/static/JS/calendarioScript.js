@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
   // Asignar fechas mínima y máxima al campo de entrada
   if (dateInput) {
+      dateInput.value = formatDate(today); // Fecha por defecto: Hoy
       dateInput.min = formatDate(today); // Fecha mínima: Hoy
       dateInput.max = formatDate(maxDate); // Fecha máxima: Dentro de 30 días
   }
