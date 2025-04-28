@@ -2,6 +2,8 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from abc import ABC, abstractmethod
 from django.core.validators import EmailValidator
+from django.utils import timezone  # Importar timezone para comparar fechas y horas actuales
+from datetime import datetime, timedelta
 
 # Clase abstracta base para los estados
 class ReservationState(ABC):
@@ -40,6 +42,7 @@ class PendingState(ReservationState):
     
     def cancel(self, reservation):
         reservation._change_state(CancelledState())
+        reservation.delete()
         return True
     
     def can_confirm(self):
@@ -61,6 +64,7 @@ class ConfirmedState(ReservationState):
     
     def cancel(self, reservation):
         reservation._change_state(CancelledState())
+        reservation.delete()
         return True
     
     def can_confirm(self):
@@ -206,3 +210,40 @@ class Reservation(models.Model):
             for reservation in confirmed_reservations
         ]
         return unavailable_times
+    
+    def check_if_should_finish(self):
+        """
+        Verifica si la reserva debería pasar a estado FINISHED basado en la fecha y hora actuales.
+        Devuelve True si la reserva fue actualizada, False en caso contrario.
+        """
+        if self.state != self.StateChoices.CONFIRMED:
+            return False  # Solo las reservas confirmadas pueden pasar a finalizadas automáticamente
+            
+        now = timezone.now()
+        # Combinamos fecha y hora de la reserva para comparar
+        reservation_datetime = datetime.combine(self.date, self.time)
+        reservation_datetime = timezone.make_aware(reservation_datetime)
+        
+        # Si la fecha y hora actuales superan la de la reserva
+        if now > reservation_datetime:
+            # Pasar a estado finalizado
+            self.finish()
+            return True
+            
+        return False
+    
+    def refresh_state(self):
+        """
+        Actualiza el estado de la reserva si es necesario basado en la fecha/hora actual.
+        """
+        # Solo revisar si debe finalizar si está confirmada
+        if self.state == self.StateChoices.CONFIRMED:
+            return self.check_if_should_finish()
+        return False
+
+    # Sobreescribir el método save para verificar el estado cuando se guarde
+    def save(self, *args, **kwargs):
+        # Primero guardamos para asegurarnos de tener un ID
+        super().save(*args, **kwargs)
+        # Luego verificamos si el estado debe cambiar
+        self.refresh_state()

@@ -15,10 +15,26 @@ class ReservationListView(ListView):
     template_name = 'reservation/calendario.html'
     ordering = ['-date', '-time']
 
+    def get_queryset(self):
+        # Obtener todas las reservas
+        reservations = super().get_queryset()
+        # Actualizar el estado de todas las reservas confirmadas
+        for reservation in reservations:
+            if reservation.state == Reservation.StateChoices.CONFIRMED:
+                reservation.refresh_state()
+        return reservations
+
 class ReservationDetailView(DetailView):
     model = Reservation
     context_object_name = 'reservation'
     template_name = 'reservation/reservation_detail.html'
+    
+    def get_object(self, queryset=None):
+        # Obtenemos el objeto normalmente
+        reservation = super().get_object(queryset)
+        # Verificamos y actualizamos su estado si es necesario
+        reservation.refresh_state()
+        return reservation
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -44,7 +60,8 @@ class ReservationCreateStep1View(View):
         if number_of_people and number_of_people.isdigit():
             # Guardar en sesión
             self.request.session['reservation_step1'] = {
-                'number_of_people': int(number_of_people)
+                'number_of_people': int(number_of_people),
+                'initial_state': Reservation.StateChoices.PENDING  # Inicializar estado como pendiente
             }
             return redirect('reservation_create_step2')
         else:
@@ -211,6 +228,11 @@ class ReservationCreateStep3View(View):
                 state=Reservation.StateChoices.PENDING
             )
             reservation.save()
+
+            if reservation.confirm():
+                success_message = 'Reserva creada con éxito. Estado: Confirmada'
+            else:
+                success_message = 'Reserva creada con éxito. Estado: Pendiente'
             
             # Limpiar datos de sesión
             if 'reservation_step1' in request.session:
@@ -230,6 +252,7 @@ class ReservationCreateStep3View(View):
             'date': step2_data.get('date'),
             'time': step2_data.get('time'),
         }
+        messages.success(request, success_message)
         return render(request, self.template_name, context)
 
 # VISTAS PARA ACTUALIZACIÓN DE RESERVAS (PROCESO DE 3 PASOS)
