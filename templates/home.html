@@ -1,0 +1,18 @@
+{% load static %}
+
+{% block head %}
+    <title>Home</title>
+    <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
+
+{% endblock head %}
+
+{% block content %}
+    <div class="container">
+        <h2>Bienvenido a Restaurante Gourmet</h2>
+        <p>¡Disfruta de una experiencia culinaria única!</p>
+        <div class="buttons">
+            <a href="{% url 'lista_productos' %}"><button class="btn">C</button></a>
+            <a href="{% url 'reserva' %}"><button class="btn">R</button></a>
+        </div>
+    </div>
+{% endblock content %}

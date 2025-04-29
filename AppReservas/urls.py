@@ -28,8 +28,18 @@ from reservas.views import infoUser
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path("",include("Home.urls")),
     path('reservations/', include('reservation.urls')),
     path('reservas/', include('reservas.urls')),
+    path('calendario/', include('reservas.urls')),
+    path('calendario/', calendario, name='calendario'),
+    path('hora/', include('reservas.urls')),
+    path('hora/', hora, name='hora'),
+    path('guardarDatos/', include('reservas.urls')),
+    path('guardarDatos/', guardarDatos, name='guardar_datos'),
+    path('infoUser/', include('reservas.urls')),
+    path('infoUser/', infoUser, name='infoUser'),
+    path("catalog/", include("catalog.urls")),
 
 ]    
 
