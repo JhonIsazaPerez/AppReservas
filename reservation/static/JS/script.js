@@ -140,5 +140,3 @@ document.addEventListener('DOMContentLoaded', function() {
           form.action = window.location.pathname; // Usar la URL actual
       }
   });
-});
->>>>>>> 97394bdbee1a9cc9910d1a036baf689a1577a20f
