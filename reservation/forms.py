@@ -1,68 +1,56 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
-from datetime import time
+from datetime import datetime, timedelta, time
 from .models import Reservation
 
-class ReservationPeopleForm(forms.ModelForm):
-    """Formulario para el primer paso: selección de número de personas"""
-    
+class ReservationDateForm(forms.ModelForm):
+    """Formulario para seleccionar la fecha de reserva"""
     class Meta:
         model = Reservation
-        fields = ['number_of_people']
+        fields = ['date']
         widgets = {
-            'number_of_people': forms.NumberInput(attrs={
-                'min': 1,
-                'max': 20,
+            'date': forms.DateInput(attrs={
+                'type': 'date', 
                 'class': 'form-control',
-                'placeholder': 'Número de personas'
+                'id': 'reservation-date', 
+                'initial': datetime.now().date().strftime('%Y-%m-%d'), 
+                'placeholder': datetime.now().date().strftime('%Y-%m-%d'),
+                'value': datetime.now().date().strftime('%d-%m-%y'),
             }),
         }
         labels = {
-            'number_of_people': _('Número de personas'),
-        }
-        help_texts = {
-            'number_of_people': _('Seleccione el número de personas para su reserva (máximo 20)'),
+            'date': _('Fecha de reserva'),
         }
 
-class ReservationDateTimeForm(forms.ModelForm):
-    """Formulario para el segundo paso: selección de fecha y hora"""
+class ReservationTimeForm(forms.Form):
+    """Formulario para seleccionar la hora de reserva"""
     
-    class Meta:
-        model = Reservation
-        fields = ['date', 'time']
-        widgets = {
-            'date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
-        }
+
+    time = forms.ChoiceField(
+        choices=[],
+        label=_('Hora'),
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        help_text=_('Seleccione una hora disponible para su reserva')
+    )
     
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, selected_date=None, instance=None, **kwargs):
         super().__init__(*args, **kwargs)
         
-        # Si tenemos una fecha seleccionada, filtramos las horas disponibles
-        if 'date' in self.data:
-            selected_date = self.data.get('date')
-            if selected_date:
-                self._set_available_hours(selected_date)
-        
-        # En caso de edición, también mostrar las horas disponibles
-        elif self.instance and self.instance.pk and self.instance.date:
-            self._set_available_hours(self.instance.date)
+        if selected_date:
+            self._set_available_hours(selected_date, instance)
         else:
-            # Si no hay fecha seleccionada, mostrar mensaje para seleccionar fecha primero
-            self.fields['time'] = forms.ChoiceField(
-                choices=[],
-                label=_('Hora'),
-                help_text=_('Seleccione una fecha primero para ver las horas disponibles')
-            )
+            self.fields['time'].choices = []
+            self.fields['time'].help_text = _('Seleccione una fecha primero para ver las horas disponibles')
     
-    def _set_available_hours(self, selected_date):
+    def _set_available_hours(self, selected_date, instance=None):
         """Configura las horas disponibles para una fecha seleccionada"""
         # Obtener horas ocupadas para esa fecha
         unavailable_times = Reservation.get_unavailable_times(selected_date)
         
         # Si estamos editando, permitir la hora actual
         current_time = None
-        if self.instance and self.instance.pk:
-            current_time = self.instance.time.strftime('%H:%M:%S')
+        if instance and instance.pk:
+            current_time = instance.time.strftime('%H:%M:%S')
         
         # Crear opciones de hora en intervalos de 1 hora (9:00 a 22:00)
         available_hours = []
@@ -76,34 +64,25 @@ class ReservationDateTimeForm(forms.ModelForm):
                 available_hours.append((time_str, formatted_time))
         
         # Actualizar el campo time para mostrar solo horas disponibles
-        self.fields['time'] = forms.ChoiceField(
-            choices=available_hours,
-            label=_('Hora'),
-            widget=forms.Select(attrs={'class': 'form-control'}),
-            help_text=_('Seleccione una hora disponible para su reserva')
-        )
+        self.fields['time'].choices = available_hours
+        
+        if not available_hours:
+            self.fields['time'].help_text = _('No hay horas disponibles para esta fecha. Por favor, seleccione otra fecha.')
 
 class ReservationContactForm(forms.ModelForm):
     """Formulario para el tercer paso: información de contacto"""
     
     class Meta:
         model = Reservation
-        fields = ['name', 'phone_number']
+        fields = ['name', 'email']
         widgets = {
-            'name': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Nombre completo'
-            }),
-            'phone_number': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Número telefónico',
-                'pattern': '[0-9]{10}'  # Patrón para 10 dígitos
-            }),
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
         }
         labels = {
             'name': _('Nombre'),
-            'phone_number': _('Teléfono de contacto'),
+            'email': _('Correo electrónico'),
         }
         help_texts = {
-            'phone_number': _('Ingrese un número telefónico válido sin espacios ni guiones'),
+            'email': _('Recibirá un correo de confirmación con los detalles de su reserva'),
         }

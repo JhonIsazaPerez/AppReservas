@@ -1,0 +1,24 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendario</title>
+  <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
+</head>
+<body>
+  <div class="calendar-container">
+    <p class="calendar-title">SELECCIONA LA FECHA PARA TU RESERVA</p>
+
+    <form method="post" action="{% url 'reservation_create_step2' %}" class="calendar-wrapper" 
+        id ="calendar-form" initial="{{ form.instance.id }}">
+      {% csrf_token %}
+      {{ form.as_p }}
+      
+      <button type="submit" class="search-reserve-button" id="search-time">VER HORARIOS DISPONIBLES</button>
+    </form>
+  </div>
+</body>
+<script src="{% static 'js/calendarioScript.js' %}"></script>
+</html>

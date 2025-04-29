@@ -30,7 +30,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("",include("Home.urls")),
     path('reservations/', include('reservation.urls')),
-    path('', reserva),
     path('reservas/', include('reservas.urls')),
     path('calendario/', include('reservas.urls')),
     path('calendario/', calendario, name='calendario'),
