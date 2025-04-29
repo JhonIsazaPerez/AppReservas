@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Selección de Hora</title>
+  <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
+  <meta name="csrf-token" content="{{ csrf_token }}">
+</head>
+<body>
+  <div class="semicirculo"></div>
+  <div class="semicirculo2"></div>
+  <div class="background">
+    <h2>Selección de Hora</h2>
+    <p>Seleccione una hora disponible para continuar con la reserva:</p>
+    
+    <form id="time-form" method="POST" action="{% url 'reservation_create_step2_time' %}">
+      {% csrf_token %}
+      <div class="time-slots">
+        {% for value, label in form.time.field.choices %}
+          <button type="button" data-value="{{ value }}" class="time-button">{{ label }}</button>
+        {% endfor %}
+      </div>
+      <input type="hidden" id="selected-time" name="time" value=data-value>
+      <button class="search-reserve" type="submit">Buscar Reserva</button>
+    </form>
+    
+    <div id="selected-value" class="selected-value"></div>
+  </div>
+</body>
+<script src="{% static 'js/horaScript.js' %}"></script>
+</html>

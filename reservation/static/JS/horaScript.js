@@ -1,22 +1,36 @@
-// Obtener los botones de horarios y el botón de búsqueda
+// Obtener los botones de horarios, el botón de búsqueda y el campo oculto
 const timeButtons = document.querySelectorAll('.time-slots button');
 const searchButton = document.querySelector('.search-reserve');
+const hiddenTimeInput = document.getElementById('selected-time');
 const timeselected = document.getElementById("selected-value");
 
 // Variable para almacenar el horario seleccionado
 let selectedTime = null;
-function mostrarSeleccion(valor) {
-  timeselected.textContent = "Tu hora seleccionada es: " + valor;
-}
+
 // Agregar eventos de clic a los botones de horarios
 timeButtons.forEach(button => {
-  button.addEventListener('click', () => {
-    selectedTime = button.textContent;
-    mostrarSeleccion(selectedTime); //mostrar la hora seleccionada
+  button.addEventListener('click', function () {
+    // Actualizar el horario seleccionado
+    selectedTime = this.getAttribute('data-value');
+    hiddenTimeInput.value = selectedTime; // Actualizar el valor del campo oculto
+    timeselected.textContent = `Tu hora seleccionada es: ${this.textContent}`;
+    
     console.log(`Horario seleccionado: ${selectedTime}`);
   });
 });
 
+// Agregar evento al formulario para evitar el envío si no se selecciona una hora
+const form = document.getElementById('time-form');
+form.addEventListener('submit', function (event) {
+  if (!selectedTime) {
+    event.preventDefault();
+    alert('Por favor, seleccione una hora antes de continuar.');
+  }
+  if (!form.action || form.action.includes('/guardarDatos/')) {
+    form.action = window.location.pathname;}
+});
+
+/*
 // Agregar evento de clic al botón de búsqueda
 searchButton.addEventListener('click', () => {
   if (selectedTime != null) {
@@ -51,5 +65,5 @@ function getCookie(name) {
           }
       }
   }
-  return cookieValue};
+  return cookieValue};*/
 

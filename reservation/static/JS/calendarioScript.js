@@ -17,11 +17,22 @@ document.addEventListener("DOMContentLoaded", function() {
 
   // Asignar fechas mínima y máxima al campo de entrada
   if (dateInput) {
-      dateInput.value = formatDate(today); // Fecha por defecto: Hoy
+      dateInput.setAttribute("value", formatDate(today)); // Fecha por defecto: Hoy
       dateInput.min = formatDate(today); // Fecha mínima: Hoy
       dateInput.max = formatDate(maxDate); // Fecha máxima: Dentro de 30 días
+      dateInput.addEventListener("change", function(event) {
+        // Actualizar el atributo value con el valor seleccionado
+        dateInput.setAttribute("value", this.value); 
+        console.log(`Fecha seleccionada y actualizada: ${dateInput.value}`);
+    });
+
   }
+  
+
+
+
   timeButton.addEventListener("submit", function(e) {
+    
     if (!dateInput.value) {
       e.preventDefault();
       alert('Por favor seleccione una fecha para su reserva');

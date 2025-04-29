@@ -86,6 +86,7 @@ class ReservationCreateStep2View(View):
                 request.session['reservation_step2'] = {}
             
             request.session['reservation_step2']['date'] = date.isoformat()
+            request.session.modified = True
             
             # Redireccionar al siguiente paso (selección de hora)
             return redirect('reservation_create_step2_time')
@@ -94,7 +95,7 @@ class ReservationCreateStep2View(View):
 
 class ReservationCreateStep2TimeView(View):
     """Paso 2: Selección de hora (segunda parte)"""
-    template_name = 'reservation/time.html'
+    template_name = 'reservation/hora.html'
     
     def dispatch(self, request, *args, **kwargs):
         # Verificar si se completaron los pasos anteriores
@@ -110,6 +111,7 @@ class ReservationCreateStep2TimeView(View):
         # Obtener la fecha seleccionada
         date_str = request.session['reservation_step2']['date']
         date_obj = datetime.fromisoformat(date_str).date()
+
         
         # Obtener hora actual si existe
         current_time = None
@@ -143,7 +145,7 @@ class ReservationCreateStep2TimeView(View):
             
             # Guardar hora en sesión
             request.session['reservation_step2']['time'] = time
-            
+            request.session.modified = True
             # Redireccionar al siguiente paso
             return redirect('reservation_create_step3')
         
@@ -155,7 +157,7 @@ class ReservationCreateStep2TimeView(View):
 
 class ReservationCreateStep3View(View):
     """Paso 3: Información de contacto y confirmación"""
-    template_name = 'reservation/create_step3.html'
+    template_name = 'reservation/infoUser.html'
     
     def dispatch(self, request, *args, **kwargs):
         # Verificar si se completaron los pasos anteriores
@@ -328,7 +330,7 @@ class ReservationUpdateStep2View(View):
 
 class ReservationUpdateStep2TimeView(View):
     """Paso 2: Actualizar hora (segunda parte)"""
-    template_name = 'reservation/create_step2_time.html'  # Usar el mismo template que en creación
+    template_name = 'reservation/hora.html'  # Usar el mismo template que en creación
     
     def dispatch(self, request, *args, **kwargs):
         # Verificar si se completaron los pasos anteriores
@@ -393,7 +395,7 @@ class ReservationUpdateStep2TimeView(View):
 
 class ReservationUpdateStep3View(View):
     """Paso 3: Actualizar información de contacto"""
-    template_name = 'reservation/create_step3.html'  # Usar el mismo template que en creación
+    template_name = 'reservation/infoUser.html'  # Usar el mismo template que en creación
     
     def dispatch(self, request, *args, **kwargs):
         # Verificar si venimos del paso anterior o es edición directa

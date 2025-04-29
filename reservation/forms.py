@@ -12,15 +12,15 @@ class ReservationDateForm(forms.ModelForm):
             'date': forms.DateInput(attrs={
                 'type': 'date', 
                 'class': 'form-control',
-                'id': 'reservation-date', 
-                'initial': datetime.now().date().strftime('%Y-%m-%d'), 
-                'placeholder': datetime.now().date().strftime('%Y-%m-%d'),
-                'value': datetime.now().date().strftime('%d-%m-%y'),
+                'id': 'reservation-date',
+                
+                               
             }),
         }
         labels = {
             'date': _('Fecha de reserva'),
         }
+        
 
 class ReservationTimeForm(forms.Form):
     """Formulario para seleccionar la hora de reserva"""

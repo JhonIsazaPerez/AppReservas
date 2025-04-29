@@ -6,12 +6,41 @@ body {
   align-items: center;
   height: 100vh;
   margin: 0;
-  font-family: Arial, sans-serif;
+  font-family: 'Arial', sans-serif;
 }
-
+.selected-value {
+  font-size: 1.5em;
+  color: white;
+  margin-top: 20px;
+}
+/* Estilo para el semicírculo */
+.semicirculo {
+  position: absolute;
+  bottom: -50px; /* Ajusta la posición vertical */
+  left: -300px; /* Ajusta la posición horizontal */
+  width: 600px; /* Ajusta el tamaño */
+  height: 300px; /* La mitad del ancho para un semicírculo */
+  background-color: rgb(130, 101, 101)   ; 
+  border-top-left-radius: 300px; /* Radio para crear el semicírculo */
+  border-top-right-radius: 300px; /* Radio para completar el semicírculo */
+  z-index: -1; /* Asegura que el semicírculo esté detrás del texto */
+}
+.semicirculo2 {
+  position: absolute;
+  bottom: -50px; /* Ajusta la posición vertical */
+  left: -250px; /* Ajusta la posición horizontal */
+  width: 500px; /* Ajusta el tamaño */
+  height: 250px; /* La mitad del ancho para un semicírculo */
+  background-color: rgb(219, 173, 180)   ; 
+  border-top-left-radius: 250px; /* Radio para crear el semicírculo */
+  border-top-right-radius: 250px; /* Radio para completar el semicírculo */
+  z-index: -1; /* Asegura que el semicírculo esté detrás del texto */
+}
 .container {
   text-align: center;
   color: white;
+  position: absolute;
+  z-index: 1; /* Asegura que el texto esté por encima del semicírculo */
 }
 
 .container h1 {
@@ -29,6 +58,7 @@ body {
   flex-wrap: wrap;
   justify-content: center;
   margin: 20px 0;
+  grid-template-columns: repeat(3, 1fr);
 }
 
 .buttons button {
@@ -42,6 +72,7 @@ body {
   height: 50px;
   cursor: pointer;
   transition: all 0.3s ease-in-out;
+  grid-template-columns: repeat(3, 1fr);
 }
 
 .buttons button:hover {
@@ -180,107 +211,158 @@ body {
   background-color: #752D2D;
 }
 /* Estilo para la selección de hora */
-.time-selection {
-  background-color: #592727;
-  color: white;
+
+.background {
   text-align: center;
   padding: 20px;
   border-radius: 10px;
-  font-family: Arial, sans-serif;
+}
+
+h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+  color: #ffff;
+}
+
+p {
+  font-size: 14px;
+  margin-bottom: 20px;
+  color: #ffff;
 }
 
 .time-slots {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); 
   gap: 10px;
-  margin: 20px 0;
+  margin-bottom: 20px;
 }
 
-.time-slots button {
+.time-button {
   background-color: white;
-  color: #5C2A2A;
+  color: maroon;
   border: none;
   border-radius: 5px;
   padding: 10px 20px;
   font-size: 16px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s;
 }
 
-.time-slots button:hover {
-  background-color: #ffcccc;
+.time-button:hover {
+  background-color: maroon;
+  color: white;
 }
 
 .search-reserve {
   background-color: white;
-  color: #5C2A2A;
+  color: maroon;
   border: none;
-  padding: 12px 25px;
   border-radius: 5px;
-  font-size: 18px;
+  padding: 10px 30px;
+  font-size: 16px;
   cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 .search-reserve:hover {
-  background-color: #f3e5f5;
+  background-color: maroon;
+  color: white;
 }
 
 /* Contenedor de la informacion del usuario */
-.resumen-container {
-  background-color: #fff;
+
+.reservation-form {
+  background-color: #7a3b3b;
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  width: 400px;
   text-align: center;
-  max-width: 400px;
-  width: 100%;
 }
 
-h1 {
-  margin-bottom: 20px;
-  color: #444;
+.reservation-form h2 {
+  font-size: 24px;
+  margin-bottom: 15px;
 }
 
-.resumen-detalles {
+.reservation-form p {
+  font-size: 14px;
+  margin-bottom: 20px;;
+}
+
+.form-group {
   margin-bottom: 20px;
   text-align: left;
 }
 
-.resumen-detalles p {
-  margin: 10px 0;
-  font-size: 16px;
-}
-
-strong {
+.form-group label {
+  font-size: 14px;
   font-weight: bold;
-  color: #555;
+  margin-bottom: 5px;
+  display: block;
+  color: white;
 }
 
-.resumen-botones {
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
+.form-control {
+  position: center;
+  width: 95%;
+  padding: 10px;
+  font-size: 14px;
+  border-radius: 5px;
+  border: none;
+  margin-bottom: 5px;
 }
 
-button {
-  padding: 10px 15px;
+.help-text {
+  font-size: 12px;
+  color: #eee;
+}
+
+.btn {
+  background-color: white;
+  color: #7a3b3b;
+  font-size: 16px;
+  padding: 10px 20px;
   border: none;
   border-radius: 5px;
-  background-color: #592727;
-  color: #fff;
-  font-size: 16px;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
-button:hover {
-  background-color: #4cae4c;
+.btn:hover {
+  background-color: #e0e0e0;
+}
+.reservation-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: transparent;
+  padding: 20px;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 600px;
+  
 }
 
-button:active {
-  background-color: #449d44;
+.detail {
+  text-align: center;
+  flex: 1;
 }
+
+.detail h3 {
+  font-size: 18px;
+  color: #ffffff;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+.detail p {
+  font-size: 15px;
+  color: #ffffff;
+  margin: 0;
+}
+
+
 .hidden {
   display: none; 
 }

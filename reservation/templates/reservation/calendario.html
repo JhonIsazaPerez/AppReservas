@@ -8,11 +8,14 @@
   <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
 </head>
 <body>
+  <div class="semicirculo"></div>
+  <div class="semicirculo2"></div>
   <div class="calendar-container">
     <p class="calendar-title">SELECCIONA LA FECHA PARA TU RESERVA</p>
 
     <form method="post" action="{% url 'reservation_create_step2' %}" class="calendar-wrapper" 
-        id ="calendar-form" initial="{{ form.instance.id }}">
+        id ="calendar-form" >
+  
       {% csrf_token %}
       {{ form.as_p }}
       
