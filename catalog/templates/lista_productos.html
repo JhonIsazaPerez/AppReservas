@@ -12,19 +12,21 @@
 
 {% endblock head %}
 <body>
-    <h1>Menú</h1>
-    <ul>
-        {% for producto in productos %}
-            <li>
-                <strong>{{ producto.nombre }}</strong> - ${{ producto.precio }}<br>
-                {{ producto.descripcion }}<br>
-                {% if producto.imagen %}
-                    <img src="{{ producto.imagen.url }}" width="150"><br>
-                {% endif %}
-                <em>{{ producto.categoria }}</em>
-            </li>
-        {% endfor %}
-    </ul>
+    <div class="container">
+        <h1>Menú</h1>
+        <ul>
+            {% for producto in productos %}
+                <li>
+                    <strong>{{ producto.nombre }}</strong> - ${{ producto.precio }}<br>
+                    {{ producto.descripcion }}<br>
+                    {% if producto.imagen %}
+                        <img src="{{ producto.imagen.url }}" width="150"><br>
+                    {% endif %}
+                    <em>{{ producto.categoria }}</em>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
 </body>
 
 </html>

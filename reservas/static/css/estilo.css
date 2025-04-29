@@ -242,7 +242,7 @@ body {
 
 h1 {
   margin-bottom: 20px;
-  color: #444;
+  color: #fff;
 }
 
 .resumen-detalles {
@@ -257,7 +257,7 @@ h1 {
 
 strong {
   font-weight: bold;
-  color: #555;
+  color: #fff;
 }
 
 .resumen-botones {
