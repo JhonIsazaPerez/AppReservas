@@ -28,6 +28,7 @@ from reservas.views import infoUser
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path("",include("Home.urls")),
     path('reservations/', include('reservation.urls')),
     path('', reserva),
     path('reservas/', include('reservas.urls')),
@@ -39,6 +40,7 @@ urlpatterns = [
     path('guardarDatos/', guardarDatos, name='guardar_datos'),
     path('infoUser/', include('reservas.urls')),
     path('infoUser/', infoUser, name='infoUser'),
+    path("catalog/", include("catalog.urls")),
 
 ]    
 
