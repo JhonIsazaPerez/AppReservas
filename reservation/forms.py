@@ -33,19 +33,22 @@ class ReservationTimeForm(forms.Form):
         help_text=_('Seleccione una hora disponible para su reserva')
     )
     
-    def __init__(self, *args, selected_date=None, instance=None, **kwargs):
+    def __init__(self, *args, selected_date=None, instance=None, number_of_people=None, **kwargs):
         super().__init__(*args, **kwargs)
         
         if selected_date:
-            self._set_available_hours(selected_date, instance)
+            self._set_available_hours(selected_date, instance, number_of_people)
         else:
             self.fields['time'].choices = []
             self.fields['time'].help_text = _('Seleccione una fecha primero para ver las horas disponibles')
     
-    def _set_available_hours(self, selected_date, instance=None):
+    def _set_available_hours(self, selected_date, instance=None, number_of_people=None):
         """Configura las horas disponibles para una fecha seleccionada"""
         # Obtener horas ocupadas para esa fecha
-        unavailable_times = Reservation.get_unavailable_times(selected_date)
+        unavailable_times = Reservation.get_unavailable_times(
+            selected_date, 
+            number_of_people
+        )
         
         # Si estamos editando, permitir la hora actual
         current_time = None

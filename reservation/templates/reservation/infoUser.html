@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulario de Contacto</title>
+  <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
+</head>
+<body>
+  <div class="semicirculo"></div>
+  <div class="semicirculo2"></div>
+  <div class="reservation-form">
+    <h2>INFORMACIÓN DE CONTACTO</h2>
+    <p>Complete los campos a continuación para continuar con la reserva</p>
+    <form method="POST">
+      {% csrf_token %}
+      
+      <div class="form-group">
+        <label for="id_name" >{{ form.name.label }}</label>
+        {{ form.name }}
+      </div>
+
+      <div class="form-group">
+        <label for="id_email" class="label">{{ form.email.label }}</label>
+        {{ form.email }}
+        <small class="help-text">{{ form.email.help_text }}</small>
+      </div>
+      <div class="reservation-details">
+        <div class="detail">
+          <h3>PERSONAS</h3>
+          <p id="person">{{ number_of_people }}</p>
+        </div>
+        <div class="detail">
+          <h3>FECHA</h3>
+          <p id="date">{{ date }}</p>
+        </div>
+        <div class="detail">
+          <h3>Hora</h3>
+          <p id="time">{{time}}</p>
+        </div>
+      </div>
+      <button type="submit" class="btn">CONFIRMAR RESERVA</button>
+    </form>
+  </div>
+</body>
+</html>
