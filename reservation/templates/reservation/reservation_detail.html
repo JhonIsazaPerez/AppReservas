@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalles de la Reserva</title>
+    <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
+</head>
+<body>
+    <div class="semicirculo"></div>
+    <div class="semicirculo2"></div>
+    <div class="container">
+        <h1>Detalles de la Reserva</h1>
+        <div class="details">
+            <p><strong>Detalles:</strong> {{ reservation.details }}</p>
+            <p><strong>Nombre:</strong> {{ reservation.name }}</p>
+            <p><strong>Fecha:</strong> {{ reservation.date }}</p>
+            <p><strong>Hora:</strong> {{ reservation.time }}</p>
+        </div>
+       <div class="buttons-containerDetails">
+            {% if can_confirm %}
+            <form method="post" action="{% url 'reservation_confirm' reservation.id %}">
+                {% csrf_token %}
+                <button type="submit" class="confirm-button">Confirmar</button>
+            </form>
+            {% endif %}
+            {% if can_cancel %}
+            <form method="post" action="{% url 'reservation_cancel' reservation.id %}">
+                {% csrf_token %}
+                <button type="submit" class="cancel-button">Cancelar</button>
+            </form>
+            {% endif %}
+            <form method="get" action="{% url 'reservation_update' reservation.id %}">
+                <button type="submit" class="modify-button">Modificar</button>
+            </form>
+        
+       </div>
+       <div style="text-align: center; margin-top: 30px;" href="{% url reservation_update_step1}"></div>
+            <a href="{% url 'reservation_list' %}" class="back-button">Volver al Calendario</a>
+       </div>
+    </div>
+     
+</body>
+</html>

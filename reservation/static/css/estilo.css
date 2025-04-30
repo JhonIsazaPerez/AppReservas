@@ -361,7 +361,154 @@ p {
   color: #ffffff;
   margin: 0;
 }
+/* estilo para reservation_list */
+table {
+  position: relative;
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  
+}
+th, td {
+  padding: 10px;
+  text-align: left;
+  border: 1px solid #ddd;
+}
+th {
+  background-color: #e4e4e4;
+  color: rgb(0, 0, 0);
+}
+td {
+  background-color: transparent;
+  color: rgb(255, 255, 255);
+}
+tr:nth-child(even) {
+  background-color: transparent;
+  color: white
+}
+tr:hover {
+  background-color: #ae4545;
+  color: white;
+}
+.details-button {
+  padding: 5px 10px;
+  background-color: #ffffff;
+  color: rgb(0, 0, 0);
+  text-decoration: none;
+  border-radius: 5px;
+}
+.details-button:hover {
+  background-color: #b30000;
+  color: white;
+}
+.titulo-container {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  position: absolute;
+  align-items: center;
+}
+.titulo-container h1 {
+  font-size: 2em;
+  color: white;
+  margin-bottom: 10px;
+}
+.titulo-container h2 {
+  font-size: 1.5em;
+  color: white;
+  margin-bottom: 20px;
+}
+/*Estilo para reserva_details*/
 
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: transparent;
+    padding: 20px;
+    border-radius: 10px;
+    
+}
+.buttons-containerDetails{
+  display: flex; /* Crea una disposición horizontal */
+    justify-content: center; /* Centra los botones horizontalmente */
+    gap: 10px;
+}
+.buttons-containerDetails button{
+    background-color: white;
+    color: #333;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+.details {
+    margin: 20px 0;
+}
+.details p {
+    font-size: 18px;
+    margin: 5px 0;
+}
+.actions {
+    text-align: center;
+    margin-top: 20px;
+}
+.actions button {
+    padding: 10px 15px;
+    margin: 5px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.confirm-button {
+    background-color: white;
+    color: black;
+}
+.confirm-button:hover {
+    background-color: #972a2a;
+    color: white;
+}
+.finish-button {
+    background-color: white;
+    color: black;
+}
+.finish-button:hover {
+    background-color: #972a2a;
+    color: white;
+}
+.cancel-button {
+    background-color: white;
+    color: black;
+}
+.cancel-button:hover {
+    background-color: #972a2a;
+    color: white;
+}
+.modify-button {
+    background-color: white;
+    color: black;
+}
+.modify-button:hover {
+    background-color: #972a2a;
+    color: white;
+}
+.back-button {
+    background-color: #6c757d;
+    color: white;
+    text-decoration: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+}
+.back-button:hover {
+    background-color: #5a6268;
+}
 
 .hidden {
   display: none; 
