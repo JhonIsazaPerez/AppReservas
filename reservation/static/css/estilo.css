@@ -9,39 +9,58 @@ body {
   margin: 0;
   font-family: 'Arial', sans-serif;
 }
+
 .selected-value {
   font-size: 1.5em;
   color: white;
   margin-top: 20px;
 }
+
 /* Estilo para el semicírculo */
 .semicirculo {
   position: absolute;
-  bottom: -50px; /* Ajusta la posición vertical */
-  left: -300px; /* Ajusta la posición horizontal */
-  width: 600px; /* Ajusta el tamaño */
-  height: 300px; /* La mitad del ancho para un semicírculo */
-  background-color: rgb(130, 101, 101)   ; 
-  border-top-left-radius: 300px; /* Radio para crear el semicírculo */
-  border-top-right-radius: 300px; /* Radio para completar el semicírculo */
-  z-index: -1; /* Asegura que el semicírculo esté detrás del texto */
+  bottom: -50px;
+  /* Ajusta la posición vertical */
+  left: -300px;
+  /* Ajusta la posición horizontal */
+  width: 600px;
+  /* Ajusta el tamaño */
+  height: 300px;
+  /* La mitad del ancho para un semicírculo */
+  background-color: rgb(130, 101, 101);
+  border-top-left-radius: 300px;
+  /* Radio para crear el semicírculo */
+  border-top-right-radius: 300px;
+  /* Radio para completar el semicírculo */
+  z-index: -1;
+  /* Asegura que el semicírculo esté detrás del texto */
 }
+
 .semicirculo2 {
   position: absolute;
-  bottom: -50px; /* Ajusta la posición vertical */
-  left: -250px; /* Ajusta la posición horizontal */
-  width: 500px; /* Ajusta el tamaño */
-  height: 250px; /* La mitad del ancho para un semicírculo */
-  background-color: rgb(219, 173, 180)   ; 
-  border-top-left-radius: 250px; /* Radio para crear el semicírculo */
-  border-top-right-radius: 250px; /* Radio para completar el semicírculo */
-  z-index: -1; /* Asegura que el semicírculo esté detrás del texto */
+  bottom: -50px;
+  /* Ajusta la posición vertical */
+  left: -250px;
+  /* Ajusta la posición horizontal */
+  width: 500px;
+  /* Ajusta el tamaño */
+  height: 250px;
+  /* La mitad del ancho para un semicírculo */
+  background-color: rgb(219, 173, 180);
+  border-top-left-radius: 250px;
+  /* Radio para crear el semicírculo */
+  border-top-right-radius: 250px;
+  /* Radio para completar el semicírculo */
+  z-index: -1;
+  /* Asegura que el semicírculo esté detrás del texto */
 }
+
 .container {
   text-align: center;
   color: white;
   position: absolute;
-  z-index: 1; /* Asegura que el texto esté por encima del semicírculo */
+  z-index: 1;
+  /* Asegura que el texto esté por encima del semicírculo */
 }
 
 .container h1 {
@@ -235,7 +254,7 @@ p {
 
 .time-slots {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); 
+  grid-template-columns: repeat(3, 1fr);
   gap: 10px;
   margin-bottom: 20px;
 }
@@ -290,8 +309,10 @@ p {
 
 .reservation-form p {
   font-size: 14px;
-  margin-bottom: 20px;;
-  
+  margin-bottom: 20px;
+  ;
+}
+
 h1 {
   margin-bottom: 20px;
   color: #fff;
@@ -340,6 +361,7 @@ h1 {
 .btn:hover {
   background-color: #e0e0e0;
 }
+
 .reservation-details {
   display: flex;
   justify-content: space-between;
@@ -349,7 +371,8 @@ h1 {
   border-radius: 10px;
   width: 80%;
   max-width: 600px;
-  
+}
+
 strong {
   font-weight: bold;
   color: #fff;
@@ -376,7 +399,7 @@ strong {
 
 
 .hidden {
-  display: none; 
+  display: none;
 }
 
 .reservation-detail-container {
@@ -620,7 +643,9 @@ tr:last-child td {
   justify-content: center;
 }
 
-.details-button, .edit-button, .delete-button {
+.details-button,
+.edit-button,
+.delete-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -651,7 +676,9 @@ tr:last-child td {
   color: white;
 }
 
-.details-button:hover, .edit-button:hover, .delete-button:hover {
+.details-button:hover,
+.edit-button:hover,
+.delete-button:hover {
   transform: translateY(-3px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
@@ -735,8 +762,15 @@ tr:last-child td {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .message-success {
@@ -753,36 +787,34 @@ tr:last-child td {
 
 @media (max-width: 768px) {
   .titulo-container {
-      padding: 20px;
-      width: 95%;
+    padding: 20px;
+    width: 95%;
   }
-  
-  th, td {
-      padding: 12px 10px;
-      font-size: 13px;
+
+  th,
+  td {
+    padding: 12px 10px;
+    font-size: 13px;
   }
-  
+
   .action-buttons {
-      flex-direction: column;
-      gap: 5px;
+    flex-direction: column;
+    gap: 5px;
   }
-  
-  .details-button, .edit-button, .delete-button {
-      padding: 6px 10px;
-      font-size: 12px;
-      min-width: auto;
+
+  .details-button,
+  .edit-button,
+  .delete-button {
+    padding: 6px 10px;
+    font-size: 12px;
+    min-width: auto;
   }
-  
+
   h1 {
-      font-size: 24px;
+    font-size: 24px;
   }
-  
+
   h2 {
-      font-size: 14px;
+    font-size: 14px;
   }
-}
-
-
-.hidden {
-  display: none;
 }
