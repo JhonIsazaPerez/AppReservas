@@ -1,105 +1,93 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Reservas</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome para los iconos -->
+    <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
+    <!-- Font Awesome para iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        body {
-            background-color: #f8f9fa;
-            padding: 20px;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        header {
-            margin-bottom: 30px;
-            text-align: center;
-        }
-    </style>
+
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Sistema de Reservas</h1>
-        </header>
-
-        <div class="card shadow">
-            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Lista de Reservas</h5>
-                <a href="{% url 'reservation_create_step1' %}" class="btn btn-light btn-sm">
-                    <i class="fas fa-plus"></i> Nueva Reserva
-                </a>
-            </div>
-            <div class="card-body">
-                {% if reservations %}
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Nombre</th>
-                                    <th>Fecha</th>
-                                    <th>Hora</th>
-                                    <th>Personas</th>
-                                    <th>Estado</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for reservation in reservations %}
-                                <tr>
-                                    <td>{{ reservation.name }}</td>
-                                    <td>{{ reservation.date }}</td>
-                                    <td>{{ reservation.time }}</td>
-                                    <td>{{ reservation.number_of_people }}</td>
-                                    <td>
-                                        {% if reservation.state == 'pending' %}
-                                            <span class="badge bg-warning">Pendiente</span>
-                                        {% elif reservation.state == 'confirmed' %}
-                                            <span class="badge bg-success">Confirmada</span>
-                                        {% elif reservation.state == 'finished' %}
-                                            <span class="badge bg-secondary">Finalizada</span>
-                                        {% elif reservation.state == 'cancelled' %}
-                                            <span class="badge bg-danger">Cancelada</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        <div class="btn-group btn-group-sm" role="group">
-                                            <a href="{% url 'reservation_detail' reservation.id %}" class="btn btn-outline-primary" title="Ver detalles">
-                                                <i class="fas fa-eye"></i> Ver
-                                            </a>
-                                            {% if reservation.state != 'finished' and reservation.state != 'cancelled' %}
-                                                <a href="{% url 'reservation_update_step1' reservation.id %}" class="btn btn-outline-secondary" title="Actualizar">
-                                                    <i class="fas fa-edit"></i> Editar
-                                                </a>
-                                            {% endif %}
-                                        </div>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                {% else %}
-                    <div class="alert alert-info">
-                        No hay reservas disponibles. 
-                        <a href="{% url 'reservation_create_step1' %}" class="alert-link">Crear nueva reserva</a>.
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-
-        <footer class="mt-4 text-center text-muted">
-            <p>Sistema de Reservas &copy; {% now "Y" %}</p>
-        </footer>
+    <div class="semicirculo"></div>
+    <div class="semicirculo2"></div>
+    
+    <div class="titulo-container">
+        <h1>Tus Reservas</h1>
+        <h2>Consulta y gestiona tus reservas en nuestro restaurante</h2>
+        
+        <a href="{% url 'reservation_create_step1' %}" class="add-button">
+            <i class="fas fa-plus-circle"></i> Nueva Reserva
+        </a>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Cliente</th>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>            
+                </tr>
+            </thead>
+            <tbody>
+                {% for reservation in reservations %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ reservation.name }}</td>
+                    <td>{{ reservation.date|date:"d/m/Y" }}</td>
+                    <td>{{ reservation.time|time:"H:i" }}</td>
+                    <td>
+                        {% if reservation.state == 'pending' %}
+                            <span class="badge badge-pending">
+                                <i class="fas fa-clock"></i> Pendiente
+                            </span>
+                        {% elif reservation.state == 'confirmed' %}
+                            <span class="badge badge-confirmed">
+                                <i class="fas fa-check-circle"></i> Confirmada
+                            </span>
+                        {% elif reservation.state == 'finished' %}
+                            <span class="badge badge-finished">
+                                <i class="fas fa-flag-checkered"></i> Finalizada
+                            </span>
+                        {% elif reservation.state == 'cancelled' %}
+                            <span class="badge badge-cancelled">
+                                <i class="fas fa-times-circle"></i> Cancelada
+                            </span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <a href="{% url 'reservation_detail' reservation.id %}" class="details-button">
+                                <i class="fas fa-eye"></i> Detalles
+                            </a>
+                            
+                            {% if reservation.state != 'finished' and reservation.state != 'cancelled' %}
+                            <a href="{% url 'reservation_update_step1' reservation.id %}" class="edit-button">
+                                <i class="fas fa-edit"></i> Editar
+                            </a>
+                            
+                            <a href="{% url 'reservation_cancel' reservation.id %}" class="delete-button" 
+                               onclick="return confirm('¿Estás seguro de que deseas cancelar esta reserva?');">
+                                <i class="fas fa-trash-alt"></i> Eliminar
+                            </a>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="empty-message">
+                        <i class="fas fa-calendar-alt fa-2x" style="display: block; margin-bottom: 10px;"></i>
+                        No hay reservas disponibles. ¡Crea una nueva reserva!
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

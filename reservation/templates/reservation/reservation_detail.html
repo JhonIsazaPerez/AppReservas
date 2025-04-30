@@ -1,0 +1,110 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detalles de Reserva</title>
+  <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
+  <!-- Font Awesome para los iconos -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+</head>
+<body>
+  <div class="semicirculo"></div>
+  <div class="semicirculo2"></div>
+  
+  <div class="reservation-detail-container">
+    <div class="reservation-header">
+      <h1>Detalles de Reserva</h1>
+      
+    
+    </div>
+    
+    <div class="reservation-card">
+      <div class="info-group">
+        <span class="label"><i class="fas fa-user"></i> Cliente:</span>
+        <span class="value">{{ reservation.name }}</span>
+      </div>
+      
+      <div class="info-group">
+        <span class="label"><i class="fas fa-envelope"></i> Email:</span>
+        <span class="value">{{ reservation.email }}</span>
+      </div>
+      
+      <div class="info-group">
+        <span class="label"><i class="fas fa-users"></i> Personas:</span>
+        <span class="value">{{ reservation.number_of_people }}</span>
+      </div>
+      
+      <div class="info-group">
+        <span class="label"><i class="fas fa-calendar"></i> Fecha:</span>
+        <span class="value">{{ reservation.date|date:"d/m/Y" }}</span>
+      </div>
+      
+      <div class="info-group">
+        <span class="label"><i class="fas fa-clock"></i> Hora:</span>
+        <span class="value">{{ reservation.time|time:"H:i" }}</span>
+      </div>
+      
+      <div class="info-group">
+        <span class="label"><i class="fas fa-info-circle"></i> Estado:</span>
+        <span class="value">
+          {% if reservation.state == 'pending' %}
+            <span class="status-badge status-pending">Pendiente</span>
+          {% elif reservation.state == 'confirmed' %}
+            <span class="status-badge status-confirmed">Confirmada</span>
+          {% elif reservation.state == 'finished' %}
+            <span class="status-badge status-finished">Finalizada</span>
+          {% elif reservation.state == 'cancelled' %}
+            <span class="status-badge status-cancelled">Cancelada</span>
+          {% endif %}
+        </span>
+      </div>
+      
+      <div class="info-group">
+        <span class="label"><i class="fas fa-calendar-plus"></i> Creada:</span>
+        <span class="value">{{ reservation.created_at|date:"d/m/Y H:i" }}</span>
+      </div>
+      
+      {% if reservation.created_at != reservation.updated_at %}
+      <div class="info-group">
+        <span class="label"><i class="fas fa-edit"></i> Actualizada:</span>
+        <span class="value">{{ reservation.updated_at|date:"d/m/Y H:i" }}</span>
+      </div>
+      {% endif %}
+    </div>
+    
+    {% if reservation.state != 'finished' and reservation.state != 'cancelled' %}
+    <div class="actions">
+      {% if can_confirm %}
+      <a href="{% url 'reservation_confirm' reservation.id %}" class="action-button btn-confirm">
+        <i class="fas fa-check-circle"></i> Confirmar
+      </a>
+      {% endif %}
+      
+      {% if can_finish %}
+      <a href="{% url 'reservation_finish' reservation.id %}" class="action-button btn-finish">
+        <i class="fas fa-flag-checkered"></i> Finalizar
+      </a>
+      {% endif %}
+      
+      {% if can_cancel %}
+      <a href="{% url 'reservation_cancel' reservation.id %}" class="action-button btn-cancel" 
+         onclick="return confirm('¿Estás seguro de que deseas cancelar esta reserva?');">
+        <i class="fas fa-times-circle"></i> Cancelar
+      </a>
+      {% endif %}
+      
+      <a href="{% url 'reservation_update_step1' reservation.id %}" class="action-button btn-edit">
+        <i class="fas fa-edit"></i> Editar
+      </a>
+    </div>
+    {% endif %}
+    
+    <a href="{% url 'reservation_list' %}" class="back-button">
+      <i class="fas fa-arrow-left"></i> Volver a la lista
+    </a>
+  </div>
+</body>
+</html>

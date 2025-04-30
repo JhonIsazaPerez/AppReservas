@@ -194,21 +194,95 @@ class Reservation(models.Model):
     
 
     @staticmethod
-    def get_unavailable_times(date):
-        """Retorna una lista de horas que ya están reservadas para una fecha específica"""
-        # Obtener reservas confirmadas para esa fecha
-        confirmed_reservations = Reservation.objects.filter(
+    def get_unavailable_times(date, number_of_people=None):
+        """
+        Retorna una lista de horas que ya están reservadas para una fecha específica,
+        considerando el tamaño de la mesa/grupo.
+        
+        Args:
+            date: La fecha para verificar disponibilidad
+            number_of_people: El tamaño del grupo que desea reservar (opcional)
+        """
+        # Definir capacidad del restaurante por tamaño de mesa
+        # Por ejemplo, podríamos tener:
+        # - 5 mesas para 2 personas
+        # - 4 mesas para 4 personas
+        # - 3 mesas para 6 personas
+        # - 2 mesas para 8 personas
+        table_capacity = {
+            2: 5,  # 5 mesas para 2 personas
+            4: 4,  # 4 mesas para 4 personas
+            6: 3,  # 3 mesas para 6 personas
+            8: 2,  # 2 mesas para 8+ personas
+        }
+        
+        # Si no se especifica número de personas, usar el método original
+        if number_of_people is None:
+            # Obtener reservas confirmadas/pendientes para esa fecha
+            confirmed_reservations = Reservation.objects.filter(
+                date=date,
+                state__in=[
+                    Reservation.StateChoices.CONFIRMED,
+                    Reservation.StateChoices.PENDING
+                ]
+            )
+            # Extraer las horas de las reservas existentes
+            unavailable_times = [
+                reservation.time.strftime('%H:%M:%S') 
+                for reservation in confirmed_reservations
+            ]
+            return unavailable_times
+        
+        # Determinar qué tipo de mesa necesita según el número de personas
+        table_size = None
+        for size in sorted(table_capacity.keys()):
+            if number_of_people <= size:
+                table_size = size
+                break
+        
+        # Si es un grupo muy grande que excede nuestras categorías predefinidas
+        if table_size is None:
+            table_size = max(table_capacity.keys())  # Usar la mesa más grande disponible
+        
+        # Obtener todas las reservas para esa fecha
+        all_reservations = Reservation.objects.filter(
             date=date,
             state__in=[
                 Reservation.StateChoices.CONFIRMED,
-                Reservation.StateChoices.PENDING  # Opcional: también considerar pendientes
+                Reservation.StateChoices.PENDING
             ]
         )
-        # Extraer las horas de las reservas existentes
-        unavailable_times = [
-            reservation.time.strftime('%H:%M:%S') 
-            for reservation in confirmed_reservations
-        ]
+        
+        # Agrupar reservas por hora
+        reservations_by_time = {}
+        for reservation in all_reservations:
+            time_str = reservation.time.strftime('%H:%M:%S')
+            if time_str not in reservations_by_time:
+                reservations_by_time[time_str] = []
+            reservations_by_time[time_str].append(reservation)
+        
+        # Determinar horas no disponibles
+        unavailable_times = []
+        for time_str, reservations in reservations_by_time.items():
+            # Contar cuántas mesas de cada tipo están ocupadas a esta hora
+            tables_in_use = {size: 0 for size in table_capacity.keys()}
+            
+            for res in reservations:
+                # Determinar qué tipo de mesa está usando cada reserva
+                res_size = None
+                for size in sorted(table_capacity.keys()):
+                    if res.number_of_people <= size:
+                        res_size = size
+                        break
+                if res_size is None:
+                    res_size = max(table_capacity.keys())
+                    
+                tables_in_use[res_size] += 1
+            
+            # Verificar si hay mesas disponibles del tamaño requerido
+            if tables_in_use[table_size] >= table_capacity[table_size]:
+                unavailable_times.append(time_str)
+        
         return unavailable_times
     
     def check_if_should_finish(self):

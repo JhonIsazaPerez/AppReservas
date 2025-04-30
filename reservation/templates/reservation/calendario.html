@@ -11,7 +11,7 @@
   <div class="calendar-container">
     <p class="calendar-title">SELECCIONA LA FECHA PARA TU RESERVA</p>
 
-    <form method="post" action="{% url 'reservation_create_step2' %}" class="calendar-wrapper" 
+    <form method="post" class="calendar-wrapper" 
         id ="calendar-form" initial="{{ form.instance.id }}">
       {% csrf_token %}
       {{ form.as_p }}
@@ -20,5 +20,5 @@
     </form>
   </div>
 </body>
-<script src="{% static 'js/calendarioScript.js' %}"></script>
+<script src="{% static 'JS/calendarioScript.js' %}"></script>
 </html>

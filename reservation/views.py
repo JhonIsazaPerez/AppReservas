@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, time
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.views import View
@@ -12,7 +12,7 @@ from .forms import ReservationDateForm, ReservationContactForm, ReservationTimeF
 class ReservationListView(ListView):
     model = Reservation
     context_object_name = 'reservations'
-    template_name = 'reservation/calendario.html'
+    template_name = 'reservation/reservation_list.html'
     ordering = ['-date', '-time']
 
     def get_queryset(self):
@@ -127,6 +127,9 @@ class ReservationCreateStep2TimeView(View):
         # Obtener la fecha seleccionada
         date_str = request.session['reservation_step2']['date']
         date_obj = datetime.fromisoformat(date_str).date()
+
+        # Obtener el número de personas del paso 1
+        number_of_people = request.session['reservation_step1'].get('number_of_people')
         
         # Obtener hora actual si existe
         current_time = None
@@ -139,11 +142,16 @@ class ReservationCreateStep2TimeView(View):
             instance = Reservation(time=current_time)
         
         # Crear formulario de hora
-        form = ReservationTimeForm(selected_date=date_obj, instance=instance)
+        form = ReservationTimeForm(
+            selected_date=date_obj,
+            instance=instance, 
+            number_of_people=number_of_people
+            )
         
         context = {
             'form': form,
-            'selected_date': date_obj
+            'selected_date': date_obj,
+            'number_of_people': number_of_people
         }
         return render(request, self.template_name, context)
     
@@ -151,16 +159,24 @@ class ReservationCreateStep2TimeView(View):
         # Obtener la fecha seleccionada
         date_str = request.session['reservation_step2']['date']
         date_obj = datetime.fromisoformat(date_str).date()
+
+        # Obtener el número de personas
+        number_of_people = request.session['reservation_step1'].get('number_of_people')
         
         # Procesar formulario
-        form = ReservationTimeForm(request.POST, selected_date=date_obj)
+        form = ReservationTimeForm(request.POST, selected_date=date_obj, number_of_people=number_of_people)
         
         if form.is_valid():
             time = form.cleaned_data['time']
+            print(f"DEBUG - Guardando hora en sesión: {time}")
             
             # Guardar hora en sesión
             request.session['reservation_step2']['time'] = time
+            print(f"DEBUG - Sesión después de guardar: {request.session['reservation_step2']}")
             
+            # Modificar para que la sesión se guarde inmediatamente
+            request.session.modified = True
+
             # Redireccionar al siguiente paso
             return redirect('reservation_create_step3')
         
@@ -172,7 +188,7 @@ class ReservationCreateStep2TimeView(View):
 
 class ReservationCreateStep3View(View):
     """Paso 3: Información de contacto y confirmación"""
-    template_name = 'reservation/create_step3.html'
+    template_name = 'reservation/infoUser.html'
     
     def dispatch(self, request, *args, **kwargs):
         # Verificar si se completaron los pasos anteriores
@@ -211,6 +227,11 @@ class ReservationCreateStep3View(View):
         
         # Procesar el formulario
         form = ReservationContactForm(request.POST)
+            # Validar que tengamos una hora válida antes de proceder
+        time_str = step2_data.get('time')
+        if not time_str:
+            messages.error(request, 'No se ha seleccionado una hora válida. Por favor vuelva al paso anterior.')
+            return redirect('reservation_create_step2_time')
         
         if form.is_valid():
             # Crear una reserva combinando todos los datos de los pasos
@@ -218,13 +239,20 @@ class ReservationCreateStep3View(View):
             
             date_str = step2_data.get('date')
             date_obj = datetime.fromisoformat(date_str).date() if date_str else None
-            
+            # Convertir el string de tiempo a un objeto time
+            time_str = step2_data.get('time')
+            time_obj = None
+            if time_str:
+                # El formato es 'HH:MM:SS'
+                hour, minute, second = map(int, time_str.split(':'))
+                time_obj = time(hour=hour, minute=minute, second=second)
+
             reservation = Reservation(
                 name=form.cleaned_data['name'],
                 email=form.cleaned_data['email'],
                 number_of_people=step1_data.get('number_of_people'),
                 date=date_obj,
-                time=step2_data.get('time'),
+                time=time_obj,
                 state=Reservation.StateChoices.PENDING
             )
             reservation.save()
@@ -308,6 +336,7 @@ class ReservationUpdateStep2View(View):
         
         if session_id != reservation_id and session_id is not None:
             # Si el ID en sesión es distinto, redirigir al paso 1 con el ID correcto
+            print("hola")
             return redirect('reservation_update_step1', pk=reservation_id)
         
         return super().dispatch(request, *args, **kwargs)
@@ -351,7 +380,7 @@ class ReservationUpdateStep2View(View):
 
 class ReservationUpdateStep2TimeView(View):
     """Paso 2: Actualizar hora (segunda parte)"""
-    template_name = 'reservation/create_step2_time.html'  # Usar el mismo template que en creación
+    template_name = 'reservation/time.html'  # Usar el mismo template que en creación
     
     def dispatch(self, request, *args, **kwargs):
         # Verificar si se completaron los pasos anteriores
@@ -396,27 +425,24 @@ class ReservationUpdateStep2TimeView(View):
         form = ReservationTimeForm(request.POST, selected_date=date_obj, instance=reservation)
         
         if form.is_valid():
-            time = form.cleaned_data['time']
+            time_str = form.cleaned_data['time']
+            
+            # Convertir string de tiempo a objeto time
+            hour, minute, second = map(int, time_str.split(':'))
+            time_obj = time(hour=hour, minute=minute, second=second)
             
             # Actualizar la reserva con los nuevos valores
             reservation.date = date_obj
-            reservation.time = time
+            reservation.time = time_obj  # Ahora sí es un objeto time
             reservation.save()
             
             # Redireccionar al siguiente paso
             return redirect('reservation_update_step3', pk=reservation.id)
-        
-        context = {
-            'form': form,
-            'selected_date': date_obj,
-            'object': reservation
-        }
-        return render(request, self.template_name, context)
 
 
 class ReservationUpdateStep3View(View):
     """Paso 3: Actualizar información de contacto"""
-    template_name = 'reservation/create_step3.html'  # Usar el mismo template que en creación
+    template_name = 'reservation/infoUser.html'  # Usar el mismo template que en creación
     
     def dispatch(self, request, *args, **kwargs):
         # Verificar si venimos del paso anterior o es edición directa

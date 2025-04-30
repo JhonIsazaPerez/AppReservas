@@ -6,12 +6,41 @@ body {
   align-items: center;
   height: 100vh;
   margin: 0;
-  font-family: Arial, sans-serif;
+  font-family: 'Arial', sans-serif;
 }
-
+.selected-value {
+  font-size: 1.5em;
+  color: white;
+  margin-top: 20px;
+}
+/* Estilo para el semicírculo */
+.semicirculo {
+  position: absolute;
+  bottom: -50px; /* Ajusta la posición vertical */
+  left: -300px; /* Ajusta la posición horizontal */
+  width: 600px; /* Ajusta el tamaño */
+  height: 300px; /* La mitad del ancho para un semicírculo */
+  background-color: rgb(130, 101, 101)   ; 
+  border-top-left-radius: 300px; /* Radio para crear el semicírculo */
+  border-top-right-radius: 300px; /* Radio para completar el semicírculo */
+  z-index: -1; /* Asegura que el semicírculo esté detrás del texto */
+}
+.semicirculo2 {
+  position: absolute;
+  bottom: -50px; /* Ajusta la posición vertical */
+  left: -250px; /* Ajusta la posición horizontal */
+  width: 500px; /* Ajusta el tamaño */
+  height: 250px; /* La mitad del ancho para un semicírculo */
+  background-color: rgb(219, 173, 180)   ; 
+  border-top-left-radius: 250px; /* Radio para crear el semicírculo */
+  border-top-right-radius: 250px; /* Radio para completar el semicírculo */
+  z-index: -1; /* Asegura que el semicírculo esté detrás del texto */
+}
 .container {
   text-align: center;
   color: white;
+  position: absolute;
+  z-index: 1; /* Asegura que el texto esté por encima del semicírculo */
 }
 
 .container h1 {
@@ -29,6 +58,7 @@ body {
   flex-wrap: wrap;
   justify-content: center;
   margin: 20px 0;
+  grid-template-columns: repeat(3, 1fr);
 }
 
 .buttons button {
@@ -42,6 +72,7 @@ body {
   height: 50px;
   cursor: pointer;
   transition: all 0.3s ease-in-out;
+  grid-template-columns: repeat(3, 1fr);
 }
 
 .buttons button:hover {
@@ -180,107 +211,561 @@ body {
   background-color: #752D2D;
 }
 /* Estilo para la selección de hora */
-.time-selection {
-  background-color: #592727;
-  color: white;
+
+.background {
   text-align: center;
   padding: 20px;
   border-radius: 10px;
-  font-family: Arial, sans-serif;
+}
+
+h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+  color: #ffff;
+}
+
+p {
+  font-size: 14px;
+  margin-bottom: 20px;
+  color: #ffff;
 }
 
 .time-slots {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); 
   gap: 10px;
-  margin: 20px 0;
+  margin-bottom: 20px;
 }
 
-.time-slots button {
+.time-button {
   background-color: white;
-  color: #5C2A2A;
+  color: maroon;
   border: none;
   border-radius: 5px;
   padding: 10px 20px;
   font-size: 16px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s;
 }
 
-.time-slots button:hover {
-  background-color: #ffcccc;
+.time-button:hover {
+  background-color: maroon;
+  color: white;
 }
 
 .search-reserve {
   background-color: white;
-  color: #5C2A2A;
+  color: maroon;
   border: none;
-  padding: 12px 25px;
   border-radius: 5px;
-  font-size: 18px;
+  padding: 10px 30px;
+  font-size: 16px;
   cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 .search-reserve:hover {
-  background-color: #f3e5f5;
+  background-color: maroon;
+  color: white;
 }
 
 /* Contenedor de la informacion del usuario */
-.resumen-container {
-  background-color: #fff;
+
+.reservation-form {
+  background-color: #7a3b3b;
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  width: 400px;
   text-align: center;
-  max-width: 400px;
-  width: 100%;
 }
 
-h1 {
-  margin-bottom: 20px;
-  color: #444;
+.reservation-form h2 {
+  font-size: 24px;
+  margin-bottom: 15px;
 }
 
-.resumen-detalles {
+.reservation-form p {
+  font-size: 14px;
+  margin-bottom: 20px;;
+}
+
+.form-group {
   margin-bottom: 20px;
   text-align: left;
 }
 
-.resumen-detalles p {
-  margin: 10px 0;
-  font-size: 16px;
-}
-
-strong {
+.form-group label {
+  font-size: 14px;
   font-weight: bold;
-  color: #555;
+  margin-bottom: 5px;
+  display: block;
+  color: white;
 }
 
-.resumen-botones {
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
+.form-control {
+  position: center;
+  width: 95%;
+  padding: 10px;
+  font-size: 14px;
+  border-radius: 5px;
+  border: none;
+  margin-bottom: 5px;
 }
 
-button {
-  padding: 10px 15px;
+.help-text {
+  font-size: 12px;
+  color: #eee;
+}
+
+.btn {
+  background-color: white;
+  color: #7a3b3b;
+  font-size: 16px;
+  padding: 10px 20px;
   border: none;
   border-radius: 5px;
-  background-color: #592727;
-  color: #fff;
-  font-size: 16px;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
-button:hover {
-  background-color: #4cae4c;
+.btn:hover {
+  background-color: #e0e0e0;
+}
+.reservation-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: transparent;
+  padding: 20px;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 600px;
+  
 }
 
-button:active {
-  background-color: #449d44;
+.detail {
+  text-align: center;
+  flex: 1;
 }
+
+.detail h3 {
+  font-size: 18px;
+  color: #ffffff;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+.detail p {
+  font-size: 15px;
+  color: #ffffff;
+  margin: 0;
+}
+
+
 .hidden {
   display: none; 
+}
+
+.reservation-detail-container {
+  text-align: center;
+  background-color: #7a3b3b;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  width: 500px;
+  color: white;
+}
+
+.reservation-header {
+  margin-bottom: 20px;
+}
+
+.reservation-header h1 {
+  font-size: 26px;
+  margin-bottom: 10px;
+}
+
+.reservation-card {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+.info-group {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 10px 0;
+}
+
+.info-group:last-child {
+  border-bottom: none;
+}
+
+.label {
+  font-weight: bold;
+  color: #f0d3d3;
+}
+
+.value {
+  color: white;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+.status-pending {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+.status-confirmed {
+  background-color: #28a745;
+  color: white;
+}
+
+.status-finished {
+  background-color: #6c757d;
+  color: white;
+}
+
+.status-cancelled {
+  background-color: #dc3545;
+  color: white;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 25px;
+}
+
+.action-button {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.3s;
+}
+
+.action-button i {
+  font-size: 14px;
+}
+
+.back-button {
+  background-color: white;
+  color: #5C2A2A;
+  margin-top: 20px;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.back-button:hover {
+  background-color: #5C2A2A;
+  color: white;
+  border: 2px solid white;
+}
+
+.btn-confirm {
+  background-color: #28a745;
+  color: white;
+}
+
+.btn-edit {
+  background-color: #0d6efd;
+  color: white;
+}
+
+.btn-finish {
+  background-color: #6c757d;
+  color: white;
+}
+
+.btn-cancel {
+  background-color: #dc3545;
+  color: white;
+}
+
+.action-button:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.disabled:hover {
+  transform: none;
+}
+
+/* Para mensajes de alerta */
+.message {
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.message-success {
+  background-color: rgba(40, 167, 69, 0.2);
+  border: 1px solid #28a745;
+}
+
+.message-error {
+  background-color: rgba(220, 53, 69, 0.2);
+  border: 1px solid #dc3545;
+}
+
+.titulo-container {
+  text-align: center;
+  background-color: #7a3b3b;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+  width: 90%;
+  max-width: 900px;
+  color: white;
+  margin: 20px auto;
+}
+
+h1 {
+  font-size: 32px;
+  margin-bottom: 5px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+h2 {
+  font-size: 18px;
+  margin-bottom: 25px;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 20px 0;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+thead {
+  background-color: rgba(0, 0, 0, 0.25);
+}
+
+th {
+  text-align: left;
+  padding: 15px 20px;
+  font-weight: bold;
+  color: #f0d3d3;
+  letter-spacing: 0.5px;
+  font-size: 15px;
+  text-transform: uppercase;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+td {
+  padding: 15px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+tr:hover td {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.details-button, .edit-button, .delete-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 13px;
+  transition: all 0.3s;
+  border: none;
+  min-width: 90px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.details-button {
+  background-color: #ffffff;
+  color: #7a3b3b;
+}
+
+.edit-button {
+  background-color: #0d6efd;
+  color: white;
+}
+
+.delete-button {
+  background-color: #dc3545;
+  color: white;
+}
+
+.details-button:hover, .edit-button:hover, .delete-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.add-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(to right, #28a745, #2dce4f);
+  color: white;
+  padding: 12px 20px;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 16px;
+  margin: 15px 0;
+  transition: all 0.3s;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border: 2px solid transparent;
+}
+
+.add-button:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 12px;
+  border-radius: 50px;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.badge i {
+  margin-right: 5px;
+  font-size: 10px;
+}
+
+.badge-pending {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+.badge-confirmed {
+  background-color: #28a745;
+  color: white;
+}
+
+.badge-finished {
+  background-color: #6c757d;
+  color: white;
+}
+
+.badge-cancelled {
+  background-color: #dc3545;
+  color: white;
+}
+
+.empty-message {
+  text-align: center;
+  padding: 30px;
+  color: rgba(255, 255, 255, 0.7);
+  font-style: italic;
+  font-size: 16px;
+}
+
+.message {
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: bold;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.message-success {
+  background-color: rgba(40, 167, 69, 0.2);
+  border: 1px solid #28a745;
+  color: #d4edda;
+}
+
+.message-error {
+  background-color: rgba(220, 53, 69, 0.2);
+  border: 1px solid #dc3545;
+  color: #f8d7da;
+}
+
+@media (max-width: 768px) {
+  .titulo-container {
+      padding: 20px;
+      width: 95%;
+  }
+  
+  th, td {
+      padding: 12px 10px;
+      font-size: 13px;
+  }
+  
+  .action-buttons {
+      flex-direction: column;
+      gap: 5px;
+  }
+  
+  .details-button, .edit-button, .delete-button {
+      padding: 6px 10px;
+      font-size: 12px;
+      min-width: auto;
+  }
+  
+  h1 {
+      font-size: 24px;
+  }
+  
+  h2 {
+      font-size: 14px;
+  }
 }
