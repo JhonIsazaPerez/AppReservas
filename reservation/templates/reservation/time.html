@@ -1,13 +1,15 @@
+{% extends 'base.html' %}
 {% load static %}
 <!DOCTYPE html>
 <html lang="es">
-<head>
+{% block head %}
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Calendario</title>
   <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
-</head>
-<body>
+{% endblock head %}
+
+{% block content %}
   <div class="semicirculo"></div>
   <div class="semicirculo2"></div>
   <div class="calendar-container">
@@ -21,6 +23,6 @@
       <button type="submit" class="search-reserve-button" id="search-time">Continuar</button>
     </form>
   </div>
-</body>
 <script src="{% static 'JS/calendarioScript.js' %}"></script>
+{% endblock content %}
 </html>

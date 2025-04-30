@@ -1,22 +1,28 @@
+{% extends 'base.html' %}
 {% load static %}
+
 
 {% block head %}
     <title>Home</title>
     <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
-
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 {% endblock head %}
 
 {% block content %}
-    
+
     <div class="semicirculo"></div>
     <div class="semicirculo2"></div>
 
-    <div class="container">
-        <h1>Bienvenido a Restaurante Gourmet</h1>
-        <p>¡Disfruta de una experiencia culinaria única!</p>
-        <div class="buttons">
-            <a href="{% url 'lista_productos' %}"><button class="btn">C</button></a>
-            <a href="{% url 'reservation_list' %}"><button class="btn">R</button></a>
+    <div class="home-container">
+        <h1 class="home-title">Bienvenido a <span>Restaurante Gourmet</span></h1>
+        <p class="home-subtitle">¡Disfruta de una experiencia culinaria única!</p>
+        <div class="buttons-home">
+            <a href="{% url 'lista_productos' %}">
+                <button class="btn-home">Ver Menú</button>
+            </a>
+            <a href="{% url 'reservation_list' %}">
+                <button class="btn-home">Reservar</button>
+            </a>
         </div>
     </div>
 {% endblock content %}

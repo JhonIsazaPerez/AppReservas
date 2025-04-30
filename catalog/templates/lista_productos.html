@@ -1,15 +1,17 @@
+{% extends 'base.html' %}
 {% load static %}
 <!DOCTYPE html>
 <html lang="es">
-<head>
+{% block head %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Catálogo Gourmet</title>
     <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
     <meta name="csrf-token" content="{{ csrf_token }}">
-</head>
-<body>
+{% endblock head %}
+
+{% block content %}
     <div class="background-decor">
         <div class="semicirculo"></div>
         <div class="semicirculo2"></div>
@@ -33,5 +35,5 @@
             {% endfor %}
         </div>
     </div>
-</body>
+{% endblock content %}
 </html>

@@ -8,6 +8,7 @@ body {
   height: 100vh;
   margin: 0;
   font-family: 'Arial', sans-serif;
+  padding-top: 70px;
 }
 
 .selected-value {
@@ -874,7 +875,7 @@ tr:last-child td {
 }
 
 .precio {
-  color: #FFD700;
+  color: #d46129;
   font-weight: bold;
   margin-bottom: 10px;
 }
@@ -891,4 +892,95 @@ tr:last-child td {
   padding: 4px 10px;
   border-radius: 10px;
   font-size: 0.8rem;
+}
+
+.home-container {
+  position: relative;
+  z-index: 1;
+  max-width: 800px;
+  margin: 120px auto 0 auto;
+  padding: 40px 20px;
+  text-align: center;
+  color: white;
+}
+
+.home-title {
+  font-size: 3em;
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+
+.home-title span {
+  color: #d46129;
+}
+
+.home-subtitle {
+  font-size: 1.5em;
+  margin-bottom: 40px;
+  font-weight: 400;
+}
+
+.buttons-home {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.btn-home {
+  background-color: #d46129;
+  color: #5C2A2A;
+  padding: 12px 24px;
+  font-size: 1em;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background-color: #7D4C4C;
+  padding: 10px 30px;
+  z-index: 999;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+}
+
+.nav-links a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+  color: #d46129;
+}
+
+.header-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+  text-decoration: none;
 }
