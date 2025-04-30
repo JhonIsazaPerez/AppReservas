@@ -23,8 +23,8 @@ from reservas.views import calendario
 from reservas.views import hora
 from reservas.views import guardarDatos
 from reservas.views import infoUser
-
-
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -43,4 +43,5 @@ urlpatterns = [
 
 ]    
 
-
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

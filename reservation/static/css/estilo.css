@@ -56,16 +56,19 @@ body {
 }
 
 .container {
-  text-align: center;
+  max-width: 1100px;
+  margin: 100px auto 40px auto;
+  padding: 20px;
   color: white;
-  position: absolute;
   z-index: 1;
+  text-align: center;
   /* Asegura que el texto esté por encima del semicírculo */
 }
 
 .container h1 {
-  font-size: 2em;
-  color: white
+  font-size: 2.5em;
+  color: white;
+  margin-bottom: 40px;
 }
 
 .container p {
@@ -817,4 +820,75 @@ tr:last-child td {
   h2 {
     font-size: 14px;
   }
+}
+
+
+.titulo-centrado {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+  /* Ajusta según necesites */
+  margin-top: 40px;
+}
+
+.titulo-centrado h1 {
+  font-size: 2.5rem;
+  color: white;
+}
+
+.catalogo {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  padding: 0 20px;
+}
+
+.card {
+  background: #7D4C4C;
+  color: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  transition: transform 0.2s ease;
+}
+
+.card:hover {
+  transform: scale(1.03);
+}
+
+.card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.contenido {
+  padding: 16px;
+}
+
+.contenido h2 {
+  margin: 0 0 10px;
+  font-size: 1.3rem;
+  color: white;
+}
+
+.precio {
+  color: #FFD700;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.descripcion {
+  font-size: 0.95rem;
+  color: #f0e6e6;
+  margin-bottom: 10px;
+}
+
+.categoria {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.15);
+  padding: 4px 10px;
+  border-radius: 10px;
+  font-size: 0.8rem;
 }

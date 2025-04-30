@@ -1,32 +1,37 @@
 {% load static %}
-{% block head %}
 <!DOCTYPE html>
 <html lang="es">
-
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catálogo</title>
+    <title>Catálogo Gourmet</title>
     <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
-  {% csrf_token %}
-  <meta name="csrf-token" content="{{ csrf_token }}">
-
-{% endblock head %}
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+</head>
 <body>
+    <div class="background-decor">
+        <div class="semicirculo"></div>
+        <div class="semicirculo2"></div>
+    </div>
+
     <div class="container">
-        <h1>Menú</h1>
-        <ul>
+        <h1 class="titulo-centrado">Carta Gourmet</h1>
+        <div class="catalogo">
             {% for producto in productos %}
-                <li>
-                    <strong>{{ producto.nombre }}</strong> - ${{ producto.precio }}<br>
-                    {{ producto.descripcion }}<br>
+                <div class="card">
                     {% if producto.imagen %}
-                        <img src="{{ producto.imagen.url }}" width="150"><br>
+                        <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}">
                     {% endif %}
-                    <em>{{ producto.categoria }}</em>
-                </li>
+                    <div class="contenido">
+                        <h2>{{ producto.nombre }}</h2>
+                        <p class="precio">${{ producto.precio }}</p>
+                        <p class="descripcion">{{ producto.descripcion }}</p>
+                        <span class="categoria">{{ producto.categoria }}</span>
+                    </div>
+                </div>
             {% endfor %}
-        </ul>
+        </div>
     </div>
 </body>
-
 </html>
