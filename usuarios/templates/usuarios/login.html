@@ -17,26 +17,23 @@
         <div class="semicirculo2"></div>
     </div>
  <div class="container">
-    <h1>Iniciar Sesión</h1>
-    <form method="post">
+     <div class="login_box">
+        <h1>Iniciar Sesión</h1>
+        <form method="post">
         {% csrf_token %}
-        <label>Usuario:</label><br>
-        <input type="text" name="username"><br>
-        <label>Contraseña:</label><br>
-        <input type="password" name="password"><br><br>
+        <input type="text" name="username" placeholder="Usuario..." required><br>
+        <input type="password" name="password" placeholder="Contraseña..." required><br>
         <button type="submit">Ingresar</button>
-    </form>
+        </form>
 
-    <br>
+        <p class="register-link">
+        ¿No tienes cuenta? <a href="{% url 'registro' %}">Regístrate</a>
+        </p>
 
-    <!-- Botón para ir al registro -->
-    <form action="{% url 'registro' %}" method="get">
-        <button type="submit">¿No tienes cuenta? Regístrate</button>
-    </form>
-
-    {% for message in messages %}
-      <p style="color:red">{{ message }}</p>
-    {% endfor %}
+        {% for message in messages %}
+        <p style="color:red">{{ message }}</p>
+        {% endfor %}
+    </div>
   </div>
 {% endblock content %}
 </html>
