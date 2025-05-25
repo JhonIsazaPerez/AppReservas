@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+{% block head %}
+<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+{% endblock head %}
+
+{% block content %}
+    <div class="background-decor">
+        <div class="semicirculo"></div>
+        <div class="semicirculo2"></div>
+    </div>
+ <div class="container">
+    <h1>Iniciar Sesión</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label>Usuario:</label><br>
+        <input type="text" name="username"><br>
+        <label>Contraseña:</label><br>
+        <input type="password" name="password"><br><br>
+        <button type="submit">Ingresar</button>
+    </form>
+
+    <br>
+
+    <!-- Botón para ir al registro -->
+    <form action="{% url 'registro' %}" method="get">
+        <button type="submit">¿No tienes cuenta? Regístrate</button>
+    </form>
+
+    {% for message in messages %}
+      <p style="color:red">{{ message }}</p>
+    {% endfor %}
+  </div>
+{% endblock content %}
+</html>

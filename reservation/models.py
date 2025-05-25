@@ -3,6 +3,7 @@ from django.utils.translation import gettext_lazy as _
 from abc import ABC, abstractmethod
 from django.core.validators import EmailValidator
 from django.utils import timezone  # Importar timezone para comparar fechas y horas actuales
+from django.contrib.auth.models import User
 from datetime import datetime, timedelta
 
 # Clase abstracta base para los estados
@@ -135,6 +136,7 @@ class Reservation(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
