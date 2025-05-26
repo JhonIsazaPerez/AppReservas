@@ -8,8 +8,11 @@ from django.urls import reverse_lazy, reverse
 from django.http import JsonResponse
 from .models import Reservation
 from .forms import ReservationDateForm, ReservationContactForm, ReservationTimeForm
+from django.contrib.auth.mixins import LoginRequiredMixin
+from usuarios.views import login_view
 
-class ReservationListView(ListView):
+class ReservationListView(LoginRequiredMixin,ListView):
+    login_url = '/usuarios/login/'
     model = Reservation
     context_object_name = 'reservations'
     template_name = 'reservation/reservation_list.html'
@@ -17,7 +20,7 @@ class ReservationListView(ListView):
 
     def get_queryset(self):
         # Obtener todas las reservas
-        reservations = super().get_queryset()
+        reservations = super().get_queryset().filter(usuario=self.request.user)
         # Actualizar el estado de todas las reservas confirmadas
         for reservation in reservations:
             if reservation.state == Reservation.StateChoices.CONFIRMED:
@@ -30,11 +33,12 @@ class ReservationDetailView(DetailView):
     template_name = 'reservation/reservation_detail.html'
     
     def get_object(self, queryset=None):
-        # Obtenemos el objeto normalmente
-        reservation = super().get_object(queryset)
-        # Verificamos y actualizamos su estado si es necesario
-        reservation.refresh_state()
-        return reservation
+        try:
+            reservation = super().get_object(queryset)
+            reservation.refresh_state()
+            return reservation
+        except Reservation.DoesNotExist:
+            return None
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -46,6 +50,7 @@ class ReservationDetailView(DetailView):
         return context
 
 # VISTAS PARA CREACIÓN DE RESERVAS (PROCESO DE 3 PASOS)
+
 class ReservationCreateStep1View(View):
     """Paso 1: Selección de número de personas usando el template reserva.html"""
     
@@ -253,7 +258,8 @@ class ReservationCreateStep3View(View):
                 number_of_people=step1_data.get('number_of_people'),
                 date=date_obj,
                 time=time_obj,
-                state=Reservation.StateChoices.PENDING
+                state=Reservation.StateChoices.PENDING,
+                usuario=request.user
             )
             reservation.save()
 
@@ -519,7 +525,7 @@ def finish_reservation(request, pk):
     return redirect('reservation_detail', pk=pk)
 
 def cancel_reservation(request, pk):
-    reservation = get_object_or_404(Reservation, pk=pk)
+    reservation = get_object_or_404(Reservation, pk=pk, usuario=request.user)
     if reservation.cancel():
         messages.success(request, 'Reserva cancelada con éxito')
     else:
