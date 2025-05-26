@@ -524,5 +524,5 @@ def cancel_reservation(request, pk):
         messages.success(request, 'Reserva cancelada con éxito')
     else:
         messages.error(request, 'No se puede cancelar la reserva en su estado actual')
-    return redirect('reservation_detail', pk=pk)
+    return redirect('reservation_list')
 
