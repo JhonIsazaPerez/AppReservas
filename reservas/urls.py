@@ -1,5 +1,5 @@
 from django.urls import path
-from . import views  # El punto (.) indica que views está en el mismo directorio
+from . import views  
 
 urlpatterns = [
     path('guardarDatos/', views.guardarDatos, name='guardar_datos'),  # Ruta para guardar datos

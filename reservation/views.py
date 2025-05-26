@@ -6,8 +6,18 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, F
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy, reverse
 from django.http import JsonResponse
-from .models import Reservation
+from .models import Reservation, Coupon
 from .forms import ReservationDateForm, ReservationContactForm, ReservationTimeForm
+
+def coupon_list(request):
+    coupons = Coupon.objects.filter(is_used=False)
+    return render(request, 'coupon_list.html', {'coupons': coupons})
+
+def apply_coupon(request, coupon_id):
+    coupon = get_object_or_404(Coupon, id=coupon_id)
+    coupon.apply_coupon()
+    return redirect('reservation_list')
+
 
 class ReservationListView(ListView):
     model = Reservation

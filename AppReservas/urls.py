@@ -40,8 +40,9 @@ urlpatterns = [
     path('infoUser/', include('reservas.urls')),
     path('infoUser/', infoUser, name='infoUser'),
     path("catalog/", include("catalog.urls")),
+    
 
-]    
+]   
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
