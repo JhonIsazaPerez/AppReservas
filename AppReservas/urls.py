@@ -18,11 +18,6 @@ from django.contrib import admin
 from django.urls import path, include
 from django.contrib import admin
 from django.urls import path, include
-from reservas.views import reserva
-from reservas.views import calendario
-from reservas.views import hora
-from reservas.views import guardarDatos
-from reservas.views import infoUser
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
@@ -31,15 +26,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("",include("Home.urls")),
     path('reservations/', include('reservation.urls')),
-    path('reservas/', include('reservas.urls')),
-    path('calendario/', include('reservas.urls')),
-    path('calendario/', calendario, name='calendario'),
-    path('hora/', include('reservas.urls')),
-    path('hora/', hora, name='hora'),
-    path('guardarDatos/', include('reservas.urls')),
-    path('guardarDatos/', guardarDatos, name='guardar_datos'),
-    path('infoUser/', include('reservas.urls')),
-    path('infoUser/', infoUser, name='infoUser'),
     path("catalog/", include("catalog.urls")),
     path('usuarios/', include('usuarios.urls')),
     path('password_reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
