@@ -5,6 +5,7 @@ from django.core.validators import EmailValidator
 from django.utils import timezone  # Importar timezone para comparar fechas y horas actuales
 from django.contrib.auth.models import User
 from datetime import datetime, timedelta
+from .utils import send_reservation_email  # Importar la función para enviar correos electrónicos
 
 # Clase abstracta base para los estados
 class ReservationState(ABC):
@@ -114,6 +115,15 @@ class CancelledState(ReservationState):
     
     def can_cancel(self):
         return False
+    
+class Coupon(models.Model):
+    code = models.CharField(max_length=20, unique=True)
+    is_used = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def apply_coupon(self):
+        self.is_used = True
+        self.save()
 
 # Modelo Reservation modificado
 class Reservation(models.Model):
@@ -154,6 +164,12 @@ class Reservation(models.Model):
         else:
             return PendingState()  # Estado por defecto
     
+    
+    def generate_coupon_if_needed():
+        confirmed_reservations = Reservation.objects.filter(state='confirmed').count()
+        if confirmed_reservations % 5 == 0:  # Cada 5 reservas confirmadas, generar un cupón
+            Coupon.objects.create(code=f'COUPON-{confirmed_reservations}')
+
     def _change_state(self, new_state):
         self._state_object = new_state
         # Actualizar el campo state para la base de datos
@@ -166,13 +182,17 @@ class Reservation(models.Model):
         elif isinstance(new_state, CancelledState):
             self.state = self.StateChoices.CANCELLED
         self.save()
+        send_reservation_email(self)#cuando se cambia el estado, enviar un correo electrónico
 
     def __str__(self):
         return f"{self.name} - {self.date} {self.time} - {self.state}"
     
     def confirm(self):
         """Confirma la reserva si es posible según su estado actual"""
-        return self._state_object.confirm(self)
+        if self._state_object.confirm(self):
+            Reservation.generate_coupon_if_needed()
+            return True
+        return False
     
     def finish(self):
         """Finaliza la reserva si es posible según su estado actual"""

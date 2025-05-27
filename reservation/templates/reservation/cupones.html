@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+{% block head %}
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendario</title>
+  <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
+
+{% endblock head %}
+{% block content %}
+<div class="semicirculo"></div>
+<div class="semicirculo2"></div>
+<h2>Cupones Disponibles</h2>
+{% for coupon in coupons %}
+    <div class="coupon">
+        <p>Código: {{ coupon.code }}</p>
+        <form method="post" action="{% url 'apply_coupon' coupon.id %}">
+            {% csrf_token %}
+            <button type="submit">Aplicar Cupón</button>
+        </form>
+    </div>
+{% empty %}
+    <p>No hay cupones disponibles.</p>
+{% endfor %}
+{% endblock content %}
+</html>

@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .views import coupon_list, apply_coupon
 
 urlpatterns = [
     path('', views.ReservationListView.as_view(), name='reservation_list'),
@@ -9,6 +10,8 @@ urlpatterns = [
     path('new/step2/', views.ReservationCreateStep2View.as_view(), name='reservation_create_step2'),
     path('new/step2/time/', views.ReservationCreateStep2TimeView.as_view(), name='reservation_create_step2_time'),
     path('new/step3/', views.ReservationCreateStep3View.as_view(), name='reservation_create_step3'),
+    path('coupons/', coupon_list, name='coupon_list'),
+    path('apply_coupon/<int:coupon_id>/', apply_coupon, name='apply_coupon'),
     
     # Redirigir la ruta original de new/ al paso 1
     path('new/', views.ReservationCreateStep1View.as_view(), name='reservation_create'),
