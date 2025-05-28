@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #1e1e1e;
+        }
+
+        .producto {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            page-break-inside: avoid;
+        }
+
+        .producto h3 {
+            margin: 5px 0;
+            color: #5C2A2A;
+        }
+
+        .producto p {
+            margin: 3px 0;
+        }
+
+        .producto img {
+            float: right;
+            margin-left: 15px;
+            max-width: 120px;
+            max-height: 120px;
+            border-radius: 4px;
+        }
+
+        .categoria {
+            font-style: italic;
+            color: #555;
+        }
+
+        .clearfix {
+            clear: both;
+        }
+    </style>
+</head>
+<body>
+    <h1>Catálogo de Productos</h1>
+
+    {% for producto in productos %}
+        <div class="producto">
+            {% if producto.imagen %}
+                <img src="{{ base_url }}media/{{ producto.imagen }}" alt="{{ producto.nombre }}">
+            {% endif %}
+            <h3>{{ producto.nombre }}</h3>
+            <p><strong>Precio:</strong> ${{ producto.precio }}</p>
+            <p class="categoria"><strong>Categoría:</strong> {{ producto.categoria }}</p>
+            <p>{{ producto.descripcion }}</p>
+            <div class="clearfix"></div>
+        </div>
+    {% endfor %}
+</body>
+</html>

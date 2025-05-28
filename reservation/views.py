@@ -21,7 +21,8 @@ def apply_coupon(request, coupon_id):
     return redirect('reservation_list')
 
 
-class ReservationListView(ListView):
+class ReservationListView(LoginRequiredMixin,ListView):
+    login_url = '/usuarios/login/'
     model = Reservation
     context_object_name = 'reservations'
     template_name = 'reservation/reservation_list.html'
