@@ -1040,3 +1040,13 @@ tr:last-child td {
   color: white;
   text-decoration: none;
 }
+
+.pdf-button {
+  display: inline-block;
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 15px;
+  text-decoration: none;
+  border-radius: 6px;
+  margin-bottom: 20px;
+}
