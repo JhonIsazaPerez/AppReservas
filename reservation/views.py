@@ -17,7 +17,7 @@ def coupon_list(request):
 
 def apply_coupon(request, coupon_id):
     coupon = get_object_or_404(Coupon, id=coupon_id)
-    coupon.apply_coupon()
+    coupon.apply_coupon()       
     return redirect('reservation_list')
 
 
@@ -32,7 +32,7 @@ class ReservationListView(ListView):
         reservations = super().get_queryset().filter(usuario=self.request.user)
         # Actualizar el estado de todas las reservas confirmadas
         for reservation in reservations:
-            if reservation.state == Reservation.StateChoices.CONFIRMED:
+            if reservation.state == Reservation.StateChoices.PENDING or reservation.state == Reservation.StateChoices.CONFIRMED:
                 reservation.refresh_state()
         return reservations
 
@@ -272,10 +272,6 @@ class ReservationCreateStep3View(View):
             )
             reservation.save()
 
-            if reservation.confirm():
-                success_message = 'Reserva creada con éxito. Estado: Confirmada'
-            else:
-                success_message = 'Reserva creada con éxito. Estado: Pendiente'
             
             # Limpiar datos de sesión
             if 'reservation_step1' in request.session:
@@ -295,7 +291,6 @@ class ReservationCreateStep3View(View):
             'date': step2_data.get('date'),
             'time': step2_data.get('time'),
         }
-        messages.success(request, success_message)
         return render(request, self.template_name, context)
 
 # VISTAS PARA ACTUALIZACIÓN DE RESERVAS (PROCESO DE 3 PASOS)
