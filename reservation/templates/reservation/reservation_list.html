@@ -71,12 +71,15 @@
                             <a href="{% url 'reservation_update_step1' reservation.id %}" class="edit-button">
                                 <i class="fas fa-edit"></i> Editar
                             </a>
+                            {% endif %}
                             
+                            {% if reservation.state == 'pending'%}
                             <a href="{% url 'reservation_cancel' reservation.id %}" class="delete-button" 
                                onclick="return confirm('¿Estás seguro de que deseas cancelar esta reserva?');">
                                 <i class="fas fa-trash-alt"></i> Eliminar
                             </a>
                             {% endif %}
+                            
                         </div>
                     </td>
                 </tr>

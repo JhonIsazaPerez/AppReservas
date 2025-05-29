@@ -54,8 +54,6 @@ class ReservationDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         reservation = self.get_object()
         # Agregar información sobre las acciones posibles
-        context['can_confirm'] = reservation.can_confirm()
-        context['can_finish'] = reservation.can_finish()
         context['can_cancel'] = reservation.can_cancel()
         return context
 
