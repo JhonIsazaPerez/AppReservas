@@ -12,14 +12,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from usuarios.views import login_view
 
 def coupon_list(request):
-    coupons = Coupon.objects.filter(is_used=False)
-    return render(request, 'coupon_list.html', {'coupons': coupons})
-
-def apply_coupon(request, coupon_id):
-    coupon = get_object_or_404(Coupon, id=coupon_id)
-    coupon.apply_coupon()       
-    return redirect('reservation_list')
-
+    coupons = Coupon.objects.all()
+    return render(request, 'reservation/cupones.html', {'coupons': coupons})
 
 class ReservationListView(LoginRequiredMixin,ListView):
     login_url = '/usuarios/login/'

@@ -5,7 +5,7 @@ from django.core.validators import EmailValidator
 from django.utils import timezone  # Importar timezone para comparar fechas y horas actuales
 from django.contrib.auth.models import User
 from datetime import datetime, timedelta, time
-from .utils import send_reservation_email  # Importar la función para enviar correos electrónicos
+from .utils import send_reservation_email, send_coupon_email  # Importar la función para enviar correos electrónicos
 
 # Clase abstracta base para los estados
 class ReservationState(ABC):
@@ -136,12 +136,8 @@ class CancelledState(ReservationState):
     
 class Coupon(models.Model):
     code = models.CharField(max_length=20, unique=True)
-    is_used = models.BooleanField(default=False)
+    discount = models.DecimalField(max_digits=5, decimal_places=2, default=10)  # Descuento en porcentaje
     created_at = models.DateTimeField(auto_now_add=True)
-
-    def apply_coupon(self):
-        self.is_used = True
-        self.save()
 
 # Modelo Reservation modificado
 class Reservation(models.Model):
@@ -156,6 +152,8 @@ class Reservation(models.Model):
     email = models.EmailField(validators=[EmailValidator()], default="example@gmail.com")  # Cambiado desde phone_number
     date = models.DateField()
     time = models.TimeField()
+    coupon = models.ForeignKey(Coupon, on_delete=models.SET_NULL, null=True, blank=True)
+    has_coupon = models.BooleanField(default=False)  # Indica si se aplica un cupón
     number_of_people = models.IntegerField()
     state = models.CharField(
         max_length=20,
@@ -183,12 +181,19 @@ class Reservation(models.Model):
             return PendingState()  # Estado por defecto
     
     
-    def generate_coupon_if_needed():
-        confirmed_reservations = Reservation.objects.filter(state='confirmed').count()
-        if confirmed_reservations % 5 == 0:  # Cada 5 reservas confirmadas, generar un cupón
-            Coupon.objects.create(code=f'COUPON-{confirmed_reservations}')
+    def generate_coupon_if_needed(reserva):
+        confirmed_reservations = Reservation.objects.filter(state='confirmed').count() 
+        if confirmed_reservations > 0 and confirmed_reservations % 5 == 0:
+            coupon = Coupon.objects.create(code=f'COUPON-{confirmed_reservations}')
+            reserva.has_coupon = True  #  Asigna el cupón solo a la reserva actual
+            reserva.coupon = coupon
+            reserva.save()  # Guarda la instancia específica
+            send_coupon_email(reserva)
+            print(f" Cupón creado: {coupon.code}")
+            
 
     def _change_state(self, new_state):
+        
         self._state_object = new_state
         # Actualizar el campo state para la base de datos
         if isinstance(new_state, PendingState):
@@ -199,6 +204,8 @@ class Reservation(models.Model):
             self.state = self.StateChoices.FINISHED
         elif isinstance(new_state, CancelledState):
             self.state = self.StateChoices.CANCELLED
+        self.save()  # Guardar el cambio de estado en la base de datos
+        Reservation.generate_coupon_if_needed(self)  # Generar cupón si es necesario  
         send_reservation_email(self)#cuando se cambia el estado, enviar un correo electrónico
 
     def __str__(self):

@@ -1050,3 +1050,56 @@ tr:last-child td {
   border-radius: 6px;
   margin-bottom: 20px;
 }
+.tituloCupones {
+  text-align: center;
+  margin-top: 20px;
+  color: white;
+  font-size: 28px;
+  font-weight: bold;
+}
+.containerCupones {
+  display: inline-block;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px;
+  align-items: center;
+  justify-content: center;
+}
+.sinCupones {
+  text-align: center;
+  color: white;
+  font-size: 20px;
+  margin-top: 50px;
+  justify-content: center;
+}
+.coupon {
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  width: 300px;
+  text-align: center;
+  display: block;
+}
+.btnVolverContainer {
+  display: flex;
+  margin-top: 20px;
+  justify-content: center;
+}
+
+.btnVolverCupon {
+  display: block;
+  background-color: white;
+  color: black;
+  margin-top: 20px;
+  padding: 10px 20px;
+  text-decoration: none;
+  border-radius: 6px;
+  margin-top: 20px;
+  justify-content: center;
+}
+.btnVolverCupon:hover {
+  background-color: #5C2A2A;
+  color: white;
+  border: 2px solid white;
+}
