@@ -30,7 +30,7 @@ class ReservationListView(LoginRequiredMixin,ListView):
 
     def get_queryset(self):
         # Obtener todas las reservas
-        reservations = super().get_queryset().filter(usuario=self.request.user)
+        reservations = super().get_queryset().filter(usuario=self.request.user).exclude(state=Reservation.StateChoices.FINISHED)
         # Actualizar el estado de todas las reservas confirmadas
         for reservation in reservations:
             if reservation.state == Reservation.StateChoices.PENDING or reservation.state == Reservation.StateChoices.CONFIRMED:
@@ -535,3 +535,18 @@ def cancel_reservation(request, pk):
         messages.error(request, 'No se puede cancelar la reserva en su estado actual')
     return redirect('reservation_list')
 
+
+class ReservationHistoryView(LoginRequiredMixin, ListView):
+    """Vista para mostrar el historial de reservas finalizadas"""
+    login_url = '/usuarios/login/'
+    model = Reservation
+    context_object_name = 'reservations'
+    template_name = 'reservation/historial.html'
+    ordering = ['-date', '-time']
+
+    def get_queryset(self):
+        # Obtener solo las reservas finalizadas del usuario actual
+        return super().get_queryset().filter(
+            usuario=self.request.user,
+            state=Reservation.StateChoices.FINISHED
+        )

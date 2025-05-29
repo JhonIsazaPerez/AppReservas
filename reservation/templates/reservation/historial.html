@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+{% block head %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historial de Reservas</title>
+    <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+{% endblock head %}
+
+{% block content %}
+    <div class="semicirculo"></div>
+    <div class="semicirculo2"></div>
+    
+    <div class="titulo-container">
+        <h1>Historial de Reservas</h1>
+        <h2>Consulta todas tus reservas finalizadas</h2>
+        
+        <a href="{% url 'reservation_list' %}" class="add-button">
+            <i class="fas fa-arrow-left"></i> Volver a Reservas Activas
+        </a>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Cliente</th>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>            
+                </tr>
+            </thead>
+            <tbody>
+                {% for reservation in reservations %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ reservation.name }}</td>
+                    <td>{{ reservation.date|date:"d/m/Y" }}</td>
+                    <td>{{ reservation.time|time:"H:i" }}</td>
+                    <td>
+                        <span class="badge badge-finished">
+                            <i class="fas fa-flag-checkered"></i> Finalizada
+                        </span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <a href="{% url 'reservation_detail' reservation.id %}" class="details-button">
+                                <i class="fas fa-eye"></i> Detalles
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="empty-message">
+                        <i class="fas fa-history fa-2x" style="display: block; margin-bottom: 10px;"></i>
+                        No tienes reservas finalizadas aún. ¡Cuando completes una reserva aparecerá aquí!
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock content %}
+</html>
