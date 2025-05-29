@@ -29,6 +29,7 @@ urlpatterns = [
     path('<int:pk>/confirm/', views.confirm_reservation, name='reservation_confirm'),
     path('<int:pk>/finish/', views.finish_reservation, name='reservation_finish'),
     path('<int:pk>/cancel/', views.cancel_reservation, name='reservation_cancel'),
+    path('history/', views.ReservationHistoryView.as_view(), name='reservation_history')
     #path('api/<int:pk>/change-state/', views.api_change_state, name='api_change_state'),
 ]
 

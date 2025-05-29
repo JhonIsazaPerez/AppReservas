@@ -22,14 +22,6 @@ class ReservationState(ABC):
         pass
     
     @abstractmethod
-    def can_confirm(self):
-        pass
-    
-    @abstractmethod
-    def can_finish(self):
-        pass
-    
-    @abstractmethod
     def can_cancel(self):
         pass
     
@@ -40,10 +32,9 @@ class PendingState(ReservationState):
         now = timezone.now()
         reservation_datetime = datetime.combine(reservation.date, reservation.time) 
         reservation_datetime = timezone.make_aware(reservation_datetime)
-        print(reservation.name ,reservation_datetime)
         time_until_reservation = reservation_datetime - now 
         # Auto-confirmar si faltan menos de 24 horas pero la reserva no ha pasado aún
-        if time_until_reservation <= timedelta(hours=2) and time_until_reservation > timedelta(0):
+        if time_until_reservation <= timedelta(hours=2):
             reservation._change_state(ConfirmedState())
             return True
     
@@ -54,12 +45,7 @@ class PendingState(ReservationState):
         reservation._change_state(CancelledState())
         reservation.delete()
         return True
-    
-    def can_confirm(self):
-        return True
-    
-    def can_finish(self):
-        return False
+        
     
     def can_cancel(self):
         return True
@@ -70,6 +56,7 @@ class ConfirmedState(ReservationState):
     
     def finish(self, reservation):
         now = timezone.now()
+        print(timezone.now())
         # Combinamos fecha y hora de la reserva para comparar
         reservation_datetime = datetime.combine(reservation.date, reservation.time)
         reservation_datetime = timezone.make_aware(reservation_datetime)
@@ -79,19 +66,12 @@ class ConfirmedState(ReservationState):
             # Pasar a estado finalizado
             
             reservation._change_state(FinishedState())
+            return True
             
         return False
     
-    def cancel(self, reservation):
-        reservation._change_state(CancelledState())
-        reservation.delete()
-        return True
-    
-    def can_confirm(self):
+    def cancel(self):
         return False
-    
-    def can_finish(self):
-        return True
     
     def can_cancel(self):
         return True
@@ -104,12 +84,6 @@ class FinishedState(ReservationState):
         return False
     
     def cancel(self, reservation):
-        return False
-    
-    def can_confirm(self):
-        return False
-    
-    def can_finish(self):
         return False
     
     def can_cancel(self):
@@ -125,14 +99,6 @@ class CancelledState(ReservationState):
     def cancel(self, reservation):
         return False
     
-    def can_confirm(self):
-        return False
-    
-    def can_finish(self):
-        return False
-    
-    def can_cancel(self):
-        return False
     
 class Coupon(models.Model):
     code = models.CharField(max_length=20, unique=True)
@@ -222,14 +188,6 @@ class Reservation(models.Model):
     def cancel(self):
         """Cancela la reserva si es posible según su estado actual"""
         return self._state_object.cancel(self)
-    
-    def can_confirm(self):
-        """Verifica si la reserva puede ser confirmada"""
-        return self._state_object.can_confirm()
-    
-    def can_finish(self):
-        """Verifica si la reserva puede ser finalizada"""
-        return self._state_object.can_finish()
     
     def can_cancel(self):
         """Verifica si la reserva puede ser cancelada"""
@@ -336,8 +294,10 @@ class Reservation(models.Model):
         # Si está pendiente, verificar si debe auto-confirmarse
         # Solo revisar si debe finalizar si está confirmada
         if self.state == self.StateChoices.CONFIRMED:
+            print("hola")
             return self.finish()
         if self.state == self.StateChoices.PENDING:
+            print(self.name)
             return self.confirm()
         return False
 
