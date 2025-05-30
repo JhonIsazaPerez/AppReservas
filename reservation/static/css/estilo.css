@@ -5,10 +5,11 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: auto;
   margin: 0;
   font-family: 'Arial', sans-serif;
   padding-top: 70px;
+  min-height: 50vh;
 }
 
 .selected-value {

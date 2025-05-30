@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Reservation
+from .models import Reservation, Coupon
 
 class ReservationAdmin(admin.ModelAdmin):
     list_display = ('name', 'date', 'time', 'number_of_people', 'state', 'created_at')
@@ -25,3 +25,4 @@ class ReservationAdmin(admin.ModelAdmin):
     make_cancelled.short_description = "Marcar reservas seleccionadas como canceladas"
 
 admin.site.register(Reservation, ReservationAdmin)
+admin.site.register(Coupon)

@@ -146,7 +146,6 @@ class Reservation(models.Model):
         else:
             return PendingState()  # Estado por defecto
     
-    
     def generate_coupon_if_needed(reserva):
         confirmed_reservations = Reservation.objects.filter(state='confirmed').count() 
         if confirmed_reservations > 0 and confirmed_reservations % 5 == 0:
@@ -156,7 +155,6 @@ class Reservation(models.Model):
             reserva.save()  # Guarda la instancia específica
             send_coupon_email(reserva)
             print(f" Cupón creado: {coupon.code}")
-            
 
     def _change_state(self, new_state):
         
@@ -170,8 +168,9 @@ class Reservation(models.Model):
             self.state = self.StateChoices.FINISHED
         elif isinstance(new_state, CancelledState):
             self.state = self.StateChoices.CANCELLED
-        self.save()  # Guardar el cambio de estado en la base de datos
-        Reservation.generate_coupon_if_needed(self)  # Generar cupón si es necesario  
+            
+        self.save()
+        Reservation.generate_coupon_if_needed(self)  # Generar cupón si es necesario 
         send_reservation_email(self)#cuando se cambia el estado, enviar un correo electrónico
 
     def __str__(self):
@@ -294,10 +293,8 @@ class Reservation(models.Model):
         # Si está pendiente, verificar si debe auto-confirmarse
         # Solo revisar si debe finalizar si está confirmada
         if self.state == self.StateChoices.CONFIRMED:
-            print("hola")
             return self.finish()
         if self.state == self.StateChoices.PENDING:
-            print(self.name)
             return self.confirm()
         return False
 
