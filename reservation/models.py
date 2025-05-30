@@ -70,7 +70,7 @@ class ConfirmedState(ReservationState):
             
         return False
     
-    def cancel(self):
+    def cancel(self, reservation):
         return False
     
     def can_cancel(self):
@@ -99,9 +99,12 @@ class CancelledState(ReservationState):
     def cancel(self, reservation):
         return False
     
+    def can_cancel(self):
+        return False
+    
     
 class Coupon(models.Model):
-    code = models.CharField(max_length=20, unique=True)
+    code = models.AutoField(primary_key=True) 
     discount = models.DecimalField(max_digits=5, decimal_places=2, default=10)  # Descuento en porcentaje
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -147,9 +150,9 @@ class Reservation(models.Model):
             return PendingState()  # Estado por defecto
     
     def generate_coupon_if_needed(reserva):
-        confirmed_reservations = Reservation.objects.filter(state='confirmed').count() 
-        if confirmed_reservations > 0 and confirmed_reservations % 5 == 0:
-            coupon = Coupon.objects.create(code=f'COUPON-{confirmed_reservations}')
+        count_reservations = Reservation.objects.filter(state__in=['confirmed', 'finished']).count() 
+        if count_reservations > 0 and count_reservations % 5 == 0:
+            coupon = Coupon.objects.create()
             reserva.has_coupon = True  #  Asigna el cupón solo a la reserva actual
             reserva.coupon = coupon
             reserva.save()  # Guarda la instancia específica
@@ -167,8 +170,7 @@ class Reservation(models.Model):
         elif isinstance(new_state, FinishedState):
             self.state = self.StateChoices.FINISHED
         elif isinstance(new_state, CancelledState):
-            self.state = self.StateChoices.CANCELLED
-            
+            self.state = self.StateChoices.CANCELLED           
         self.save()
         Reservation.generate_coupon_if_needed(self)  # Generar cupón si es necesario 
         send_reservation_email(self)#cuando se cambia el estado, enviar un correo electrónico

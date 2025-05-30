@@ -49,3 +49,52 @@ def send_coupon_email(reservation):
         [reservation.email],
         fail_silently=False
     )
+
+def send_creation_email(reservation):
+    subject = f"Reserva creada: {reservation.name}"
+    message = f"""
+    Hola {reservation.name},
+
+    Tu reserva ha sido creada. 
+    Estado: {reservation.state.title()}.
+
+    Detalles:
+    - Fecha: {reservation.date}
+    - Hora: {reservation.time}
+    - Personas: {reservation.number_of_people}
+
+    Gracias por confiar en nuestro servicio.
+    """
+
+    send_mail(
+        subject,
+        message,
+        settings.DEFAULT_FROM_EMAIL,
+        [reservation.email],
+        fail_silently=False
+    )
+
+def send_updated_email(reservation):
+    subject = f"Reserva actualizada"
+    message = f"""
+    Hola {reservation.name},
+
+    Tu reserva ha sido actualizada.
+    Estado: {reservation.state.title()}.
+
+    Detalles:
+    - Fecha: {reservation.date}
+    - Hora: {reservation.time}
+    - Personas: {reservation.number_of_people}
+
+    Gracias por confiar en nuestro servicio.
+    """
+
+    send_mail(
+        subject,
+        message,
+        settings.DEFAULT_FROM_EMAIL,
+        [reservation.email],
+        fail_silently=False
+    )
+

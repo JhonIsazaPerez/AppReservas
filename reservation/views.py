@@ -10,6 +10,7 @@ from .models import Reservation, Coupon
 from .forms import ReservationDateForm, ReservationContactForm, ReservationTimeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from usuarios.views import login_view
+from .utils import send_creation_email, send_updated_email
 
 def coupon_list(request):
     coupons = Coupon.objects.all()
@@ -265,7 +266,7 @@ class ReservationCreateStep3View(View):
             )
             reservation.save()
 
-            
+            send_creation_email(reservation)
             # Limpiar datos de sesión
             if 'reservation_step1' in request.session:
                 del request.session['reservation_step1']
@@ -484,7 +485,7 @@ class ReservationUpdateStep3View(View):
         if form.is_valid():
             # Guardar el formulario
             form.save()
-            
+            send_updated_email(reservation)
             # Limpiar datos de sesión
             if 'editing_reservation_id' in request.session:
                 del request.session['editing_reservation_id']
