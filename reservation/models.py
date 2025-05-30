@@ -150,7 +150,7 @@ class Reservation(models.Model):
             return PendingState()  # Estado por defecto
     
     def generate_coupon_if_needed(reserva):
-        count_reservations = Reservation.objects.filter(state__in=['confirmed', 'finished']).count() 
+        count_reservations = Reservation.objects.filter(state='finished').count() 
         if count_reservations > 0 and count_reservations % 5 == 0:
             coupon = Coupon.objects.create()
             reserva.has_coupon = True  #  Asigna el cupón solo a la reserva actual
